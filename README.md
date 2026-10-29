@@ -1,193 +1,208 @@
 # EditSimple
 
-Montaggio video semplice, pensato per costruire presentazioni a partire da
-uno o più filmati: timeline a pellicola con traccia video e tracce audio,
-tagli, fermo immagine, avanzamento veloce o rallentatore con orologio,
-sovraimpressioni (testo, riquadri, ovali, frecce) che possono seguire un
-soggetto, logo e testo dell'operatore fissi, zoom in un riquadro ingrandito e
-pixelatura rettangolare o ovale che insegue un soggetto (volto, oggetto,
-targa) e cresce quando si avvicina. Il risultato viene esportato in un mp4 con ffmpeg.
-Un progetto è un file JSON.
+**English** · [Italiano](README.it.md)
 
-Fa parte degli strumenti di [Seity](https://www.seity.com), il progetto principale
-dell'autore: l'interfaccia è in CustomTkinter, con il tema scuro di Seity.
+A simple video editor made to build presentations from one or more videos and
+to **explain a fact or show evidence**: a film-strip timeline with a video
+track and audio tracks, cuts, freeze frames, fast forward or slow motion with a
+clock, overlays (text, images, boxes, ovals, arrows) that can follow a subject,
+a fixed logo and operator text, a zoom in a magnified box and a rectangular or
+oval pixelation that follows a subject (a face, an object, a plate) and grows
+as it comes closer. Where the tracking goes wrong, dragging the figure back
+onto the subject creates a keyframe that corrects the path. The result is
+exported to MP4 with ffmpeg. A project is a JSON file.
 
-## Manuale
+**Author: Andrea Cumini — [www.osintinfo.net](https://www.osintinfo.net) — andrea@osintinfo.net**
 
-Il **manuale d'uso**, con gli screenshot di ogni funzione, è in
-[docs/manual](docs/manual/README.md) in 9 lingue
-([italiano](docs/manual/manual.it.md), [English](docs/manual/manual.en.md), ...).
-Questo README riguarda installazione, struttura e funzionamento interno.
+EditSimple is one of the tools of [Seity](https://www.seity.com), the author's
+main project: the interface is written in CustomTkinter, with Seity's dark theme.
 
-## Requisiti
+## User manual
 
-- Windows 10/11 (64 bit). Il programma funziona anche su altri sistemi, ma la
-  finestra senza barra del titolo e il download automatico di ffmpeg sono solo
-  per Windows.
-- Python 3.11 con `tkinter`.
-- I pacchetti di `requirements.txt`: `customtkinter`, `pillow`, `numpy`,
+The **user manual**, with screenshots of every feature, is in
+[docs/manual](docs/manual/README.md) in 9 languages:
+[English](docs/manual/manual.en.md) · [Italiano](docs/manual/manual.it.md) · [Deutsch](docs/manual/manual.de.md) · [Français](docs/manual/manual.fr.md) · [Español](docs/manual/manual.es.md) · [Nederlands](docs/manual/manual.nl.md) · [Polski](docs/manual/manual.pl.md) · [Ελληνικά](docs/manual/manual.el.md) · [Shqip](docs/manual/manual.sq.md).
+This README covers installation, structure and how the program works inside.
+
+The interface is available in the same 9 languages and can be switched at any
+time, without restarting, from the *Language* box of the **Configure** page.
+
+## Download
+
+The standalone program for Windows 10/11 (64-bit) is on the
+[Releases](https://github.com/tingon11/EditSimple/releases) page: unzip it
+anywhere and run `EditSimple.exe`. Python is not needed.
+
+## Requirements (from source)
+
+- Windows 10/11 (64-bit). The program also runs on other systems, but the
+  window without title bar and the automatic download of ffmpeg are Windows only.
+- Python 3.11 with `tkinter`.
+- The packages in `requirements.txt`: `customtkinter`, `pillow`, `numpy`,
   `opencv-python-headless`.
-- **ffmpeg**, programma separato (vedi sotto): non è incluso.
+- **ffmpeg**, a separate program (see below): not included.
 
-## Installazione
+## Installation
 
 ```bash
 python -m venv .venv
 .venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-Il virtualenv va creato con il Python di questo PC: se `.venv\pyvenv.cfg`
-punta a un interprete che non esiste, il programma non parte (`No Python at
-...`). In quel caso correggi la riga `home` oppure ricrea il virtualenv.
+The virtualenv must be created with the Python of this PC: if
+`.venv\pyvenv.cfg` points to an interpreter that does not exist, the program
+does not start (`No Python at ...`). In that case fix the `home` line or
+recreate the virtualenv.
 
-## Avvio
+## Start
 
 ```bash
-.venv\Scripts\python.exe EditSimple.py [progetto.json | video.mp4]
+.venv\Scripts\python.exe EditSimple.py [project.json | video.mp4]
 ```
 
-oppure doppio clic su `Avvia.bat` (usa `pythonw.exe`, senza console). Come
-argomento si può passare un progetto da aprire o un video da importare.
+or double-click `Avvia.bat` (it uses `pythonw.exe`, without a console). A
+project to open or a video to import can be passed as argument.
 
 ## FFmpeg
 
-ffmpeg non è incluso: è un programma separato con la propria licenza e non
-entra nel pacchetto né nell'eseguibile. Viene cercato in `tools\ffmpeg\ffmpeg.exe`
-accanto al programma e poi nel PATH. Al primo avvio, se non lo trova, si apre
-la pagina **Configurazione**: **Scarica / Aggiorna** prende il build ufficiale
-per Windows ("release essentials") da <https://www.gyan.dev/ffmpeg/builds/>,
-quello indicato dal sito di FFmpeg, e tiene solo `ffmpeg.exe`, `LICENSE` e
-`README.txt` in `tools\ffmpeg\`. Nessuna installazione, nessuna modifica al
-PATH. La cartella `tools\` è esclusa dal repository (`.gitignore`) e dal build.
+ffmpeg is not included: it is a separate program with its own license and it
+is neither in the package nor in the executable. It is looked for in
+`tools\ffmpeg\ffmpeg.exe` next to the program and then in the PATH. At first
+start, if it is not found, the **Configure** page opens: **Download / Update**
+fetches the official Windows build ("release essentials") from
+<https://www.gyan.dev/ffmpeg/builds/>, the one listed on the FFmpeg website,
+and keeps only `ffmpeg.exe`, `LICENSE` and `README.txt` in `tools\ffmpeg\`. No
+installation, no change to the PATH. The `tools\` folder is excluded from the
+repository (`.gitignore`) and from the build.
 
-Serve una **release** di ffmpeg (7.x o successiva: provata con la 9.0.2).
-Evitare gli snapshot di sviluppo: quello del gennaio 2024 (`N-113347`) tronca
-il video alla fine del primo segmento quando il filtro `concat` riceve più
-ingressi, e l'esportazione esce incompleta.
+A **release** of ffmpeg is needed (7.x or later, tested with 9.0.2). Avoid
+development snapshots: the January 2024 one (`N-113347`) truncates the video at
+the end of the first segment when the `concat` filter gets several inputs, and
+the export comes out incomplete.
 
-## VitTrack (inseguimento)
+## VitTrack (tracking)
 
-L'inseguimento si fa con il confronto a modello e, se c'è, con l'aiuto di
-**VitTrack**: un modello addestrato (vision transformer) del repository
-ufficiale [opencv_zoo](https://github.com/opencv/opencv_zoo/tree/main/models/object_tracking_vittrack),
-che OpenCV esegue da sé. I due lavorano insieme: quando il confronto è sicuro
-ha ragione lui (e rimette VitTrack sul soggetto, se si è perso); quando non è
-sicuro o non trova più il soggetto, per esempio dietro a un palo dove resta
-agganciato allo sfondo, si segue VitTrack e il modello riparte da lì. Da solo
-VitTrack non basta: su un volto o su un riquadro che contiene poco scivola via,
-mentre il confronto a modello tiene. Come ffmpeg non è
-incluso: nella pagina **Configurazione**, riquadro *Inseguimento (VitTrack)*,
-**Scarica** prende il modello (circa 0,7 MB, controllato con l'impronta
-SHA-256) e la sua licenza e li mette in `toolsittrack\`. La licenza del
-modello è **Apache 2.0**, compatibile con la GPL 3 del programma (la FSF la
-considera compatibile con la GPL 3, non con la GPL 2); in ogni caso il modello
-non viene distribuito con il programma. Senza il modello resta il solo confronto a
-modello (`cv2.matchTemplate`), che dietro a un ostacolo può restare
-agganciato allo sfondo.
+Tracking uses template matching and, when available, the help of
+**VitTrack**: a trained model (vision transformer) from the official
+[opencv_zoo](https://github.com/opencv/opencv_zoo/tree/main/models/object_tracking_vittrack)
+repository, run by OpenCV itself. The two work together: when the template
+match is confident it is right (and puts VitTrack back on the subject if it got
+lost); when it is not confident or no longer finds the subject, for instance
+behind a pole where it would stay stuck on the background, VitTrack is followed
+and the template restarts from there. VitTrack alone is not enough: on a face
+or on a box that contains little it drifts away, while template matching holds.
+Like ffmpeg it is not included: on the **Configure** page, box
+*Tracking (VitTrack)*, **Download** fetches the model (about 0.7 MB, checked
+against its SHA-256 fingerprint) and its license into `tools\vittrack\`. The
+model's license is **Apache 2.0**, compatible with the program's GPL 3 (the FSF
+considers it compatible with GPL 3, not with GPL 2); in any case the model is
+not distributed with the program. Without the model only template matching
+(`cv2.matchTemplate`) remains, which behind an obstacle may stay stuck on the
+background.
 
-## Flusso di lavoro
+## Workflow
 
-1. **Importa video** (Ctrl+I). Il primo video fissa misura e frequenza del
-   progetto (i successivi vengono adattati con bande nere se hanno proporzioni
-   diverse). Il file importato viene diviso nei suoi canali: la clip va nella
-   traccia **Video**, mostrata come pellicola di fotogrammi (ingrandendo la
-   timeline con Ctrl+rotellina si arriva al singolo fotogramma), e il suo audio
-   compare nella traccia **Audio originale**, che segue sempre gli stessi
-   tagli. Gli altri video si aggiungono in coda o al cursore (il programma lo
-   chiede).
-2. **Sposta il cursore** con un clic sul righello, con ← → (un fotogramma),
-   Maiusc+← → (un secondo), Home/Fine, oppure scrivendo il tempo nella casella.
-   Spazio riproduce con l'audio, Maiusc+Spazio all'indietro (senza audio);
-   Ctrl+← → salta di dieci fotogrammi.
-3. **Segna IN e OUT** (tasti I e O, o i pulsanti) per selezionare una porzione.
-   - **Elimina** (Canc) toglie la porzione IN–OUT: ciò che segue scorre indietro.
-   - **Taglia** (S) spezza la clip al cursore; le clip si **riordinano
-     trascinandole** nella timeline (gli effetti restano al loro tempo).
-   - **Velocità** (V) applica alla porzione IN–OUT (o alla clip selezionata)
-     un avanzamento veloce 2x, 4x, 8x, 16x o 32x oppure un **rallentatore**
-     0.5x o 0.25x, con l'opzione di mostrare l'**icona di un orologio** con le
-     lancette che girano e, sotto, la scritta della velocità. La timeline si
-     accorcia o si allunga di conseguenza (anche l'audio rallenta); con 1x si
-     torna alla velocità normale. Dimensione, posizione e colore dell'orologio si regolano nel
-     pannello della clip.
-4. **Fermo immagine** (F): il fotogramma al cursore resta fermo per N secondi;
-   ciò che segue scorre avanti.
-5. **Audio**: aggiunge una traccia (commento, musica) al cursore. Ogni traccia
-   ha nome, posizione, porzione del file, **volume** e muto; si sposta
-   trascinandola. Il volume dell'audio originale e l'esclusione per singola
-   clip stanno nel pannello della clip.
-6. **Sovraimpressioni**: premi **Testo** (T), **Riquadro** (R), **Ovale** (E)
-   o **Freccia** (A) e disegna sull'anteprima (clic per il testo,
-   trascinamento per le figure). L'effetto parte dal cursore e dura i secondi
-   impostati in Configurazione; inizio e fine si cambiano nel pannello o
-   trascinando la barra nella timeline (il bordo destro cambia la durata). Nel
-   pannello: testo su più righe, **carattere** (finestra di scelta con
-   l'anteprima di ogni carattere), dimensione, colore,
-   allineamento, ombra, sfondo con opacità; colore, spessore e riempimento di
-   riquadri, ovali e frecce. Sull'anteprima l'elemento selezionato si sposta
-   trascinandolo e si ridimensiona dalle maniglie (le frecce dalle due punte).
-   - **Segui il soggetto**: riquadri, ovali e frecce possono inseguire ciò che
-     inquadrano (il contenuto della figura fa da modello; per la freccia si
-     disegna un rettangolo attorno al soggetto e la punta resta agganciata a lui).
-     Dove l'inseguimento sbaglia si trascina la figura sul soggetto: nasce un
-     **keyframe**, il percorso viene corretto e l'inseguimento riparte da lì. Riquadri e ovali crescono e calano con il
-     soggetto se si avvicina o si allontana. Se un soggetto in movimento sparisce
-     dietro a qualcosa, la figura prosegue con la sua velocità fino a 1,5 s
-     aspettando che ricompaia. Se il soggetto esce dall'inquadratura, la figura
-     lo segue fuori con la sua velocità e poi l'effetto finisce; se il
-     soggetto viene perso, l'effetto finisce lì. **Ripeti inseguimento dal
-     cursore** riparte dalla posizione corrente; **Non seguire più** rende la
-     figura ferma.
-7. **Zoom** (Z): in due passi. Trascina un rettangolo sull'oggetto da
-   ingrandire; poi sotto il mouse compare il **riquadro ingrandito** con il
-   contenuto vero, e un clic lo mette in quel punto. L'ingrandimento va da **2x
-   a 16x**: si sceglie durante il posizionamento con i tasti 2, 3, 4, 6, 8 o con
-   la rotellina, e si cambia dopo nel pannello (il programma ricorda l'ultimo
-   usato). Appena creato, lo zoom **segue l'oggetto** come riquadri e frecce:
-   l'area ingrandita lo insegue e cresce o cala con lui (se si avvicina alla
-   camera il riquadro continua a mostrarlo per intero), il riquadro resta
-   dove l'hai messo e della sua misura; se l'oggetto esce dall'inquadratura
-   lo zoom finisce. Un **contorno colorato** segna l'oggetto e una **linea**
-   lo unisce al riquadro ingrandito (tutti e due si possono togliere nel
-   pannello; il colore vale per bordo, contorno e linea). Area e riquadro si
-   spostano sull'anteprima, l'area si ridimensiona dagli angoli; colore e
-   spessore del bordo nel pannello.
-8. **Pixel** (P rettangolare, K ovale): trascina il riquadro sul soggetto,
-   indica fino a quando inseguirlo e la grandezza dei pixel. Il programma
-   segue il soggetto nei fotogrammi successivi (correlazione a modello
-   adattivo) e salva il percorso come punti.
-   Il riquadro **segue anche la misura**: se il soggetto si avvicina alla
-   camera (un veicolo fermo allo stop che riparte verso di te) la pixelatura
-   cresce per coprirlo sempre, se si allontana cala.
-   Quando il soggetto esce dall'inquadratura, la pixelatura lo segue fuori
-   (il riquadro sporge dal bordo e sparisce con lui); se viene perso,
-   finisce all'ultimo fotogramma in cui c'era. In nessun caso resta sul
-   bordo a pixelare ciò che passa. La forma (rettangolare o ovale) si cambia
-   anche nel pannello.
-9. **Logo** (L): logo e testo dell'operatore, **fermi nell'angolo scelto**.
-   Si preparano una volta nella pagina **Configura**: *Carica immagine del
-   logo* (PNG con trasparenza, JPG...), il testo (nome, qualifica, data...),
-   la larghezza del logo in % del video, l'altezza del testo e la distanza
-   dai bordi in % del lato corto, l'angolo, la disposizione (testo a destra,
-   a sinistra o sotto il logo) e il colore del testo. Il pulsante li mette per
-   **tutto il video** (anche se poi si allunga o si accorcia) o solo nella
-   porzione IN–OUT, se è segnata; un testo troppo lungo viene ridotto insieme
-   al logo per stare nel fotogramma. Sull'anteprima si spostano trascinandoli
-   e si **ridimensionano dagli angoli** (logo e testo insieme); nel pannello
-   si cambiano immagine, larghezza del logo, testo, dimensione, colore,
-   disposizione, angolo e posizione.
-10. **Esporta MP4** (Ctrl+E): sceglie il file e rende tutto con ffmpeg (H.264 +
-   AAC, qualità e velocità di codifica in Configurazione). La finestra di
-   avanzamento si può annullare.
+1. **Import video** (Ctrl+I). The first video sets size and frame rate of the
+   project (the following ones are fitted with black bars if their aspect
+   ratio differs). The imported file is split into its channels: the clip goes
+   on the **Video** track, shown as a film strip of frames (zooming the
+   timeline with Ctrl+wheel goes down to the single frame), and its audio
+   appears on the **Original audio** track, which always follows the same
+   cuts. Further videos are added at the end or at the cursor (the program
+   asks).
+2. **Move the cursor** by clicking the ruler, with ← → (one frame), Ctrl+← →
+   (ten frames), Shift+← → (one second), Home/End, or by typing the time in
+   the box. Space plays with sound, Shift+Space plays backwards (without sound).
+3. **Mark IN and OUT** (keys I and O, or the buttons) to select a portion.
+   - **Delete** (Del) removes the IN–OUT portion: what follows moves back.
+   - **Cut** (S) splits the clip at the cursor; clips are **reordered by
+     dragging** them on the timeline (effects stay at their time).
+   - **Speed** (V) applies to the IN–OUT portion (or to the selected clip) a
+     fast forward of 2x, 4x, 8x, 16x or 32x or a **slow motion** of 0.5x or
+     0.25x, optionally showing a **clock icon** with turning hands and the
+     speed written below. The timeline gets shorter or longer accordingly
+     (the audio slows down too); 1x goes back to normal speed. Size, position
+     and colour of the clock are set in the clip's panel.
+4. **Freeze** (F): the frame at the cursor stays still for N seconds; what
+   follows moves forward.
+5. **Slide**: a slide at the start, at the cursor or at the end, with a solid
+   colour or a background image fitted to the video; texts and images are put
+   on top with the Text and Image tools.
+6. **Audio**: adds a track (commentary, music) at the cursor. Every track has
+   a name, position, portion of the file, **volume**, mute and **fades** in and
+   out; it is moved by dragging it. A white line shows the volume on every
+   track. Clicking the *Original audio* row name selects the whole original
+   audio (volume, fades, removal); with IN and OUT marked, Del removes only
+   the audio of that stretch. Transitions (from black, to black, cross-fade
+   with the next clip) are in the clip's panel.
+7. **Overlays**: press **Text** (T), **Image**, **Box** (R), **Oval** (E) or
+   **Arrow** (A) and draw on the preview (a click for the text, a drag for the
+   figures). The effect starts at the cursor and lasts the seconds set in
+   Configure; start and end are changed in the panel or by dragging the bar on
+   the timeline (the right edge changes the duration). In the panel: text on
+   several lines, **font** (a picker that shows every font), size, colour,
+   alignment, shadow, background with opacity and rounded corners; colour,
+   thickness and fill of boxes, ovals and arrows. On the preview the selected
+   item is moved by dragging it and resized from its handles (arrows from
+   their two ends). **Time** and **Frames** write the elapsed time or the frame
+   number where you click.
+   - **Follow the subject**: boxes, ovals and arrows can track what they frame
+     (the content of the figure is the template; for the arrow a rectangle is
+     drawn around the subject and the tip stays on it). Where the tracking is
+     wrong, drag the figure onto the subject: a **keyframe** is created, the
+     path is corrected and tracking restarts from there. Boxes and ovals grow
+     and shrink with the subject when it comes closer or moves away. If a
+     moving subject disappears behind something, the figure goes on at its
+     speed for up to 1.5 s waiting for it to reappear. If the subject leaves
+     the frame, the figure follows it out at its speed and then the effect
+     ends; if the subject is lost, the effect ends there. **Repeat tracking
+     from the cursor** restarts from the current position; **Stop following**
+     makes the figure still.
+8. **Zoom** (Z): in two steps. Drag a rectangle over the object to magnify;
+   then the **magnified box** with the real content appears under the mouse,
+   and a click places it there. The magnification goes from **2x to 16x**: it
+   is chosen while placing with the keys 2, 3, 4, 6, 8 or the mouse wheel, and
+   changed later in the panel (the program remembers the last one). As soon
+   as it is created, the zoom **follows the object** like boxes and arrows:
+   the magnified area tracks it and grows or shrinks with it, the box stays
+   where you put it and keeps its size; if the object leaves the frame the
+   zoom ends. A **coloured outline** marks the object and a **line** links it
+   to the magnified box (both can be turned off in the panel). Shift+Z makes an
+   oval zoom.
+9. **Pixel** (P rectangular, K oval): drag the box over the subject, set until
+   when to track it and the pixel size. The program follows the subject in
+   the following frames and saves the path as points. The box **also follows
+   the size**: if the subject comes closer to the camera (a vehicle stopped at
+   a stop sign that drives towards you) the pixelation grows to always cover
+   it, if it moves away it shrinks. When the subject leaves the frame, the
+   pixelation follows it out until it is completely gone; if it is lost, it
+   ends at the last frame where it was seen. It never stays at the edge
+   pixelating whatever passes by.
+10. **Logo** (L): logo and operator text, **fixed in the chosen corner**. They
+    are prepared once on the **Configure** page: *Load logo image...* (PNG
+    with transparency, JPG...), the text (name, role, date...), the logo width
+    in % of the video, the text height and the distance from the edges in % of
+    the short side, the corner, the layout (text right, left or below the
+    logo), the text colour and a background with opacity and rounded corners.
+    The button places them over **the whole video** (even if it later gets
+    longer or shorter) or only over the IN–OUT portion, if marked.
+11. **Export MP4** (Ctrl+E): chooses the file and renders everything with
+    ffmpeg (H.264 + AAC, quality and encoding speed in Configure). The
+    progress window can be cancelled.
 
-Annulla/Ripeti: Ctrl+Z / Ctrl+Y. Salva: Ctrl+S (Ctrl+Maiusc+S con nome).
-Ctrl+rotellina sulla timeline la ingrandisce, la rotellina la scorre; la
-rotellina sull'anteprima scorre di un fotogramma. Esc annulla un disegno.
+Undo/Redo: Ctrl+Z / Ctrl+Y. Save: Ctrl+S (Ctrl+Shift+S to save as).
+On the timeline Ctrl+wheel zooms and the wheel scrolls (Shift+wheel, or the
+wheel on the row names, scrolls audio and effects vertically); a right click on
+an effect bar extends it to the cursor or stops it there, and the eye icon
+hides or shows it. On the preview the wheel moves by one frame and Ctrl+wheel
+zooms the view; the button at its top right **detaches** the preview into a
+separate window. Esc cancels a drawing.
 
-## Il file di progetto
+## The project file
 
-Un JSON con misura e frequenza del progetto, le clip in sequenza, le tracce
-audio, gli effetti e le informazioni dei file sorgente (percorsi assoluti):
+A JSON file with the size and frame rate of the project, the clips in
+sequence, the audio tracks, the effects and the information on the source
+files (absolute paths):
 
 ```json
 {
@@ -202,11 +217,11 @@ audio, gli effetti e le informazioni dei file sorgente (percorsi assoluti):
      "audio": true, "speed": 8, "clock": true}
   ],
   "audio_tracks": [
-    {"id": "t1", "name": "commento", "source": "C:/audio/voce.mp3", "start": 2.0,
+    {"id": "t1", "name": "commentary", "source": "C:/audio/voice.mp3", "start": 2.0,
      "in": 0.0, "out": 30.0, "volume": 0.8, "muted": false}
   ],
   "effects": [
-    {"id": "e1", "type": "text", "start": 1.0, "end": 5.0, "x": 80, "y": 60, "text": "Titolo",
+    {"id": "e1", "type": "text", "start": 1.0, "end": 5.0, "x": 80, "y": 60, "text": "Title",
      "font": "DejaVuSans-Bold.ttf", "size": 64, "color": "#FFFFFF", "bg": true,
      "bg_color": "#000000", "bg_alpha": 0.55, "shadow": true, "align": "left"},
     {"id": "e2", "type": "box", "start": 1.0, "end": 5.0, "x": 400, "y": 200, "w": 300, "h": 200,
@@ -222,7 +237,7 @@ audio, gli effetti e le informazioni dei file sorgente (percorsi assoluti):
     {"id": "e6", "type": "pixelate", "start": 3.0, "end": 8.0, "x": 500, "y": 120, "w": 160, "h": 160,
      "block": 16, "shape": "oval", "track": [[3.0, 500, 120, 1.0], [4.2, 540, 118, 1.2], [8.0, 700, 130, 2.1]]},
     {"id": "e7", "type": "logo", "start": 0.0, "end": 40.0, "full": true, "x": 1500, "y": 990,
-     "logo": "C:/loghi/ente.png", "w": 230, "text": "Op. Mario Rossi", "size": 38, "color": "#FFFFFF",
+     "logo": "C:/logos/agency.png", "w": 230, "text": "Op. John Smith", "size": 38, "color": "#FFFFFF",
      "layout": "right", "shadow": true, "corner": "bottom-right"}
   ],
   "sources": {"C:/video/a.mp4": {"duration": 40.0, "video_duration": 39.9, "fps": 25,
@@ -230,130 +245,132 @@ audio, gli effetti e le informazioni dei file sorgente (percorsi assoluti):
 }
 ```
 
-Tempi in secondi del video finale (timeline), coordinate in pixel del
-progetto. La durata di una clip è `(out - in) / speed` (`speed` da 0.25 a
-32). `track` è il percorso dell'inseguimento: ogni punto è `[tempo, x, y,
-scala]`, dove x, y è l'angolo del riquadro di partenza centrato sul soggetto
-(per la freccia, la punta) e la scala la sua misura rispetto al primo punto
-(manca nei progetti vecchi: vale 1). La pixelatura usa anche la scala, le
-altre figure solo lo spostamento; fra un punto e l'altro si interpola. Un
-logo con `full` copre sempre tutta la timeline. Quando si elimina una porzione o si inserisce qualcosa, gli effetti
-e le tracce audio che seguono scorrono di conseguenza; i punti dentro una
-porzione eliminata vengono tolti.
+Times are in seconds of the final video (timeline), coordinates in pixels of
+the project. The duration of a clip is `(out - in) / speed` (`speed` from 0.25
+to 32). `track` is the tracking path: every point is `[time, x, y, scale]`,
+where x, y is the corner of the starting box centred on the subject (for the
+arrow, the tip) and the scale its size relative to the first point (missing in
+old projects: it means 1). `keys` holds the keyframes set by hand. Between two
+points the values are interpolated. A logo with `full` always covers the whole
+timeline. When a portion is deleted or something is inserted, the following
+effects and audio tracks move accordingly; the points inside a deleted portion
+are removed.
 
-## Come avviene il rendering
+## How rendering works
 
-`editsimple/render.py` costruisce un unico grafo di filtri ffmpeg (scritto in
-un file e passato con `-/filter_complex`):
+`editsimple/render.py` builds one single ffmpeg filter graph (written to a file
+and passed with `-/filter_complex`):
 
-- ogni clip è un ingresso a sé (`-ss`/`-t` sul file sorgente) portato alla
-  misura del progetto con `scale` + `pad`, `fps` e `format=yuv420p`; la
-  velocità è `setpts=(PTS-STARTPTS)/N` sul video e una catena di `atempo`
-  sull'audio;
-- il fermo immagine è un PNG estratto da ffmpeg e ripetuto (`-loop 1 -t N`);
-- la pixelatura è `split` → `crop` (con `x`/`y` espressi come funzione di `t`
-  che interpola i punti dell'inseguimento) → `scale` giù e su con
-  `flags=neighbor` (per l'ovale, `geq` dà alfa zero fuori dall'ellisse) →
-  `overlay` nella stessa posizione, acceso solo nel suo intervallo (`enable`).
-  `crop` e `scale` hanno misure fisse: se il soggetto cambia misura,
-  l'intervallo si divide in tratti a misura costante (gradini del 6%, sempre
-  appena più grandi del soggetto), ognuno ritagliato con `trim` sui propri
-  fotogrammi e sovrapposto con `eof_action=pass`;
-- i segmenti vengono uniti con `concat`; sopra passano lo zoom (`split` →
-  `crop` → `scale` → `pad` per il bordo → `overlay`, più il contorno dell'area
-  come PNG sovrapposto; se l'area segue un oggetto, `x` e `y` di `crop` e del
-  contorno sono funzioni di `t`, mentre `drawbox` le calcolerebbe una volta sola;
-  contorno e linea verso il riquadro sono una sequenza di PNG, uno per
-  fotogramma, perché la linea cambia forma; se l'area cambia misura, `crop`
-  lavora a tratti di misura costante come la pixelatura),
-  le sovraimpressioni (PNG disegnati con Pillow da `overlays.py`, gli stessi
-  dell'anteprima, con `overlay` ed `enable`; se seguono un soggetto, `x` e `y`
-  sono funzioni di `t`) e l'orologio (sequenza di PNG in ciclo, una per
-  velocità);
-- le tracce audio aggiunte sono ritardate con `adelay` e mescolate con `amix`;
-- uscita H.264 (`libx264`, CRF e preset configurabili) + AAC, `+faststart`.
+- every clip is an input of its own (`-ss`/`-t` on the source file) brought to
+  the project size with `scale` + `pad`, `fps` and `format=yuv420p`; speed is
+  `setpts=(PTS-STARTPTS)/N` on the video and a chain of `atempo` on the audio;
+- a freeze frame (or a slide) is a PNG looped with `-loop 1 -t N`;
+- pixelation is `split` → `crop` (with `x`/`y` given as a function of `t` that
+  interpolates the tracking points) → `scale` down and up with
+  `flags=neighbor` (for the oval, `geq` gives zero alpha outside the ellipse) →
+  `overlay` at the same position, enabled only in its interval (`enable`).
+  `crop` and `scale` have fixed sizes: if the subject changes size, the
+  interval is split into stretches of constant size (6% steps, always just
+  larger than the subject), each trimmed with `trim` on its own frames and
+  overlaid with `eof_action=pass`. Long paths are written as nested `if`
+  (a balanced tree), because ffmpeg refuses a sum of more than about a hundred
+  terms;
+- segments are joined with `concat` or, with a cross-fade, `xfade` (all with
+  the same time base, `settb=AVTB`); on top go the zoom (`split` → `crop` →
+  `scale` → `pad` for the border → `overlay`, with the outline and the link
+  line as a PNG sequence, one per frame, because the line changes shape), the
+  overlays (PNGs drawn with Pillow by `overlays.py`, the same as in the
+  preview, with `overlay` and `enable`; if they follow a subject, `x` and `y`
+  are functions of `t`), the elapsed time and frame number (PNG sequences) and
+  the clock (a looped PNG sequence, one per speed);
+- added audio tracks are delayed with `adelay` and mixed with `amix`;
+- output H.264 (`libx264`, configurable CRF and preset) + AAC, `+faststart`.
 
-L'anteprima compone lo stesso fotogramma con Pillow (`overlays.compose`), così
-coincide con il risultato. I fotogrammi arrivano da OpenCV già ridotti alla
-misura della vista (`media.Frames`); durante la riproduzione un thread tiene
-il decoder una decina di fotogrammi avanti al cursore (senza mai tornare
-indietro: un seek su un 4K costa centinaia di millisecondi) e prepara un
-secondo decoder sul prossimo taglio, così il cambio di clip non ferma la
-riproduzione; le miniature della pellicola si fermano finché si riproduce,
-per non togliere CPU all'anteprima (provato: 4K a 30 fps e 1080p a 60 fps
-senza perdere fotogrammi). L'inseguimento
-(`tracking.py`) lavora su fotogrammi ridotti in scala di grigi con
-`cv2.matchTemplate` e un modello che si aggiorna lentamente. A ogni
-fotogramma prova cinque misure attorno a quella prevista (oggetto che si
-avvicina o si allontana) e le confronta riportando la zona trovata alla misura
-del modello, sia aggiornato sia originale: il modello che si aggiorna da solo
-assorbirebbe l'errore di misura e resterebbe indietro. Quando il
-soggetto arriva al bordo cerca solo la parte del modello ancora dentro al
-fotogramma (il modello non impara mai il bordo, quindi non può restarci
-incollato; le posizioni a cavallo del bordo si provano a gruppetti, e lì la
-misura resta quella prevista), e si ferma quando il riquadro è per metà fuori, o per più di un
-terzo e in allontanamento, oppure quando il soggetto non si ritrova per
-0,4 s; da lì la figura prosegue con l'ultima velocità finché è tutta fuori. Il
-percorso viene semplificato (Douglas–Peucker). Le miniature della pellicola le decodificano
-due thread (`timeline_view.Thumbs`), prima quelle vicine al cursore.
+The preview composes the same frame with Pillow (`overlays.compose`), so it
+matches the result. Frames come from OpenCV already reduced to the size of the
+view (`media.Frames`); during playback a thread keeps the decoder about ten
+frames ahead of the cursor (never going back: a seek on a 4K video costs
+hundreds of milliseconds) and prepares a second decoder on the next cut, so the
+change of clip does not stop playback; backwards playback reads blocks of
+frames in the background. The film-strip thumbnails pause during playback, so
+as not to take CPU from the preview. Preview audio is the same mix as the
+export, played through the Windows multimedia API.
 
-## Limiti
+Tracking (`tracking.py`) works on reduced grayscale frames with
+`cv2.matchTemplate` and a template that updates slowly. At every frame it tries
+five sizes around the expected one (object coming closer or moving away) and
+compares them by bringing the found area back to the template size, against
+both the updated and the original template: a template updating on its own
+would absorb the size error and lag behind. When the subject reaches the edge
+only the part of the template still inside the frame is searched (the template
+never learns the edge, so it cannot stick to it), and tracking stops when the
+box is half out, or more than a third out and moving away, or when the subject
+is not found for 0.4 s; from there the figure goes on at its last speed until
+it is completely out. The path is simplified (Douglas–Peucker). The film-strip
+thumbnails are decoded by two threads (`timeline_view.Thumbs`), those near the
+cursor first.
 
-- La riproduzione all'indietro è senza audio.
-- Le frecce seguono gli spostamenti del soggetto ma restano della stessa
-  misura. Le misure cambiano a gradini del 6%, sempre appena più grandi
-  dell'oggetto.
-- Senza VitTrack l'inseguimento confronta un modello d'immagine: una persona
-  sottile davanti a uno sfondo ricco che passa dietro a un palo può far restare
-  la figura sul palo. Anche con VitTrack due persone che si sovrappongono
-  possono scambiarsi per qualche istante. Disegna il riquadro stretto sul
-  soggetto; se la figura va sul soggetto sbagliato, porta il cursore dove il
-  soggetto giusto ricompare e usa *Ripeti inseguimento dal cursore*. Se il soggetto viene perso prima del previsto, porta il cursore dove ricompare, sistema la figura e usa *Ripeti
-  inseguimento dal cursore*.
-- Gli effetti sono legati ai tempi della timeline: riordinando le clip
-  restano dove sono.
-- Zoom e velocità non sono animati (niente dissolvenze o zoom progressivo).
+## Limits
 
-## Eseguibile unico
+- Backwards playback is without sound.
+- Arrows follow the movements of the subject but keep their size. Sizes change
+  in 6% steps, always just larger than the object.
+- Without VitTrack, tracking compares an image template: a thin person in front
+  of a rich background passing behind a pole can leave the figure on the pole.
+  Even with VitTrack two people overlapping may swap for a moment. Draw the box
+  tight on the subject; where the figure goes to the wrong subject, move the
+  cursor there and drag it back (a keyframe), or use *Repeat tracking from the
+  cursor*.
+- Effects are tied to timeline times: when clips are reordered they stay where
+  they are.
+- Zoom and speed are not animated (no progressive zoom or speed ramps).
+
+## Single executable
 
 ```bash
 .venv\Scripts\python.exe scripts\build_exe.py
 ```
 
-installa PyInstaller nel virtualenv se manca e compila `dist\EditSimple.exe`
-(un solo file, senza console, icona "ES"). Dentro ci sono Python, le librerie,
-logo, icona e i caratteri di `font\`. **I programmi di terze parti non entrano
-nel bundle**: ffmpeg resta nella cartella `tools\` accanto all'eseguibile, da
-scaricare con il programma stesso. `scripts\make_brand.py` rigenera logo e
-icona (serve il carattere Panchang in `font\`).
+installs PyInstaller in the virtualenv if missing and builds
+`dist\EditSimple.exe` (a single file, no console, "ES" icon). Inside are
+Python, the libraries, logo, icon and the DejaVu fonts of `font\`.
+**Third-party programs are not in the bundle**: ffmpeg stays in the `tools\`
+folder next to the executable, downloaded by the program itself. With
+`--release` it also writes `dist\EditSimple-<version>-windows-x64.zip` (exe,
+LICENSE, NOTICE, README and the license files of the bundled software) and the
+release notes taken from `CHANGELOG.md`. `scripts\make_brand.py` regenerates
+logo and icon (it needs the Panchang font in `font\`).
 
-## Struttura
+## Structure
 
-| File | Contenuto |
+| File | Content |
 | --- | --- |
-| `EditSimple.py` | punto di ingresso |
-| `editsimple/app.py` | finestra principale: intestazione, pagine Montaggio e Configurazione, azioni, inseguimento |
-| `editsimple/project.py` | modello del progetto (clip, tracce audio, effetti) e file JSON |
-| `editsimple/render.py` | esportazione: segmenti, grafo di filtri ffmpeg, avanzamento |
-| `editsimple/overlays.py` | disegno di testo, riquadri, ovali, frecce, orologio; zoom e pixelatura; composizione del fotogramma |
-| `editsimple/tracking.py` | inseguimento del soggetto (OpenCV) con rilevamento di uscita e perdita |
-| `editsimple/media.py` | informazioni sui file (ffmpeg), fotogrammi per l'anteprima (OpenCV, lettura anticipata), tempi |
-| `editsimple/timeline_view.py` | timeline: righello, pellicola di fotogrammi, audio, corsie degli effetti, trascinamenti |
-| `editsimple/preview_view.py` | anteprima con disegno e modifica delle sovraimpressioni col mouse |
-| `editsimple/panels.py` | pannello delle proprietà dell'elemento selezionato |
-| `editsimple/fonts.py` | caratteri di `font/` e di Windows, finestra di scelta con anteprima |
-| `editsimple/tools.py` | ricerca, download e aggiornamento di ffmpeg in `tools/` |
-| `editsimple/theme.py`, `widgets.py`, `frameless.py` | tema scuro, componenti e dialoghi, finestra senza barra |
-| `editsimple/procs.py`, `config.py` | processi figli legati all'app; impostazioni in `config.json` |
-| `font/` | caratteri che viaggiano con il programma (DejaVu; Panchang per il logo) |
-| `editsimple/i18n.py`, `editsimple/locales/` | lingue dell'interfaccia (italiano nel codice, cataloghi per le altre 8) |
-| `editsimple/audio.py` | riproduzione dell'audio nell'anteprima (Windows) |
-| `scripts/build_exe.py`, `scripts/make_brand.py` | eseguibile unico; logo e icona |
-| `scripts/check_i18n.py` | controllo dei cataloghi delle lingue |
-| `scripts/manual_screenshots.py` | rifà il progetto d'esempio passo per passo e prende gli screenshot del manuale |
-| `docs/manual/` | manuale d'uso in 9 lingue con gli screenshot |
-| `tools/` | programmi di terze parti scaricati (ffmpeg): fuori dal repository e dal bundle |
+| `EditSimple.py` | entry point |
+| `editsimple/app.py` | main window: header, Editing and Configure pages, actions, tracking |
+| `editsimple/project.py` | project model (clips, audio tracks, effects) and JSON file |
+| `editsimple/render.py` | export: segments, ffmpeg filter graph, progress |
+| `editsimple/overlays.py` | drawing of text, boxes, ovals, arrows, clock, time; zoom and pixelation; frame composition |
+| `editsimple/tracking.py` | subject tracking (OpenCV, optional VitTrack) with exit and loss detection |
+| `editsimple/media.py` | file information (ffmpeg), frames for the preview (OpenCV, read-ahead), times |
+| `editsimple/timeline_view.py` | timeline: ruler, film strip, audio, effect lanes, dragging |
+| `editsimple/preview_view.py` | preview with drawing and editing of overlays with the mouse, view zoom |
+| `editsimple/panels.py` | properties panel of the selected item |
+| `editsimple/fonts.py` | fonts of `font/` and of Windows, picker with preview |
+| `editsimple/tools.py` | finding, downloading and updating ffmpeg and VitTrack in `tools/` |
+| `editsimple/audio.py` | audio playback in the preview (Windows) |
+| `editsimple/i18n.py`, `editsimple/locales/` | interface languages (Italian in the code, catalogs for the other 8) |
+| `editsimple/theme.py`, `widgets.py`, `frameless.py` | dark theme, components and dialogs, window without title bar |
+| `editsimple/procs.py`, `config.py` | child processes tied to the app; settings in `config.json` |
+| `font/` | fonts shipped with the program (DejaVu; Panchang for the logo, not redistributed) |
+| `scripts/build_exe.py`, `scripts/make_brand.py` | single executable and release zip; logo and icon |
+| `scripts/check_i18n.py` | check of the language catalogs |
+| `scripts/manual_screenshots.py` | rebuilds the example project step by step and takes the manual's screenshots |
+| `docs/manual/` | user manual in 9 languages with screenshots |
+| `tools/` | downloaded third-party programs (ffmpeg, VitTrack): outside the repository and the bundle |
 
-## Crediti
+## License and credits
+
+EditSimple is free software under the GNU GPL version 3 with additional
+attribution terms (see `LICENSE` and `NOTICE`).
 
 Andrea Cumini — andrea@osintinfo.net — www.osintinfo.net
