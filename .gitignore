@@ -1,0 +1,42 @@
+# ambiente Python e IDE
+.venv/
+venv/
+env/
+.idea/
+.vscode/
+__pycache__/
+*.py[cod]
+
+# impostazioni locali: percorsi, ultima geometria
+config.json
+
+# compilazione (scripts/build_exe.py) e copie delle release
+build/
+dist/
+dist_*/
+*.spec
+
+# programmi di terze parti scaricati dal programma (ffmpeg): non vanno nel repository ne' nel bundle
+tools/
+
+# file di scarto e temporanei
+garbage/
+*.log
+*.tmp
+*.bak
+Thumbs.db
+desktop.ini
+
+# video di prova e risultati: non vanno nel repository
+*.mp4
+*.mov
+*.mkv
+*.avi
+*.webm
+*.mts
+*.m2ts
+*.ts
+
+# il carattere del logo (Panchang, ITF Free Font License) non si ridistribuisce: serve solo a
+# scripts/make_brand.py sul computer di chi rifa' logo e icona
+font/Panchang*

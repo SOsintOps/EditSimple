@@ -1,0 +1,145 @@
+EditSimple
+Copyright (C) 2026 Andrea Cumini <andrea@osintinfo.net>
+https://www.osintinfo.net
+Part of the Seity project: https://www.seity.com
+
+This program is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the Free
+Software Foundation, version 3 of the License, together with the additional
+terms below.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+The full text of the GNU General Public License version 3 is in the file
+LICENSE. It is also available at <https://www.gnu.org/licenses/gpl-3.0.html>.
+
+
+ADDITIONAL TERMS (GNU GPL version 3, section 7)
+===============================================
+
+1. Attribution (section 7(b))
+
+   Every copy of this program, and every work based on it, must preserve:
+
+   (a) the copyright and license notices in the source files, and this
+       NOTICE file;
+
+   (b) the author attribution
+
+           Andrea Cumini - andrea@osintinfo.net - www.osintinfo.net
+
+       in the source files, in the documentation and in the user interface,
+       where it is displayed as the credits line in the status bar at the
+       bottom of the main window and in the Credits box of the
+       Configuration page, and is part of the Appropriate Legal Notices of
+       the program.
+
+   The attribution must remain legible. Modified versions may add their own
+   notices next to it, but may not remove, hide or alter it.
+
+2. Modified versions (section 7(c))
+
+   Modified versions must be marked in a reasonable way as different from
+   the original version, and must not misrepresent the origin of the
+   material.
+
+3. Name and logo (section 7(e))
+
+   The name "EditSimple", its logo and its "ES" icon (editsimple/assets/
+   logo.png, editsimple/assets/editsimple.ico and the same artwork inside
+   the program's window and executable) identify the original program and
+   its author. The License does not grant any right to use them as a trade
+   name, trademark or service mark: a modified version distributed to
+   others must use a different name and logo. Unmodified copies may keep
+   them.
+
+   The videos produced with the program belong to whoever makes them: these
+   terms do not apply to them.
+
+
+FONTS
+=====
+
+The logo and the icon are set in Panchang, a typeface by Indian Type Foundry
+(ITF), distributed by Fontshare <https://www.fontshare.com/fonts/panchang>
+under the ITF Free Font License; ITF owns its trademarks and copyright. The
+logo and icon files contain outlines and pixels only: the font itself is not
+distributed with this program (it is not in the executable and must not be
+committed to the repository; scripts/make_brand.py looks for it locally).
+
+The font/ folder and the executable contain the DejaVu Sans fonts
+<https://dejavu-fonts.github.io/>, used for the texts written on the videos.
+They are (c) Bitstream (Bitstream Vera) and Tavmjong Bah (Arev glyphs); the
+DejaVu changes are in the public domain. Their license is in
+font/LICENSE-DejaVu.txt and travels with them.
+
+The icons of the toolbar come from Segoe Fluent Icons / Segoe MDL2 Assets,
+fonts installed with Windows: they are used from the system and are not
+distributed with this program.
+
+
+THIRD-PARTY SOFTWARE
+====================
+
+EditSimple does not include FFmpeg. When the user asks for it, the program
+downloads the official Windows build ("release essentials", by Gyan Doshi,
+<https://www.gyan.dev/ffmpeg/builds/>, the build linked from
+<https://ffmpeg.org/download.html>) into the tools/ffmpeg/ folder next to
+it, keeping ffmpeg.exe together with its LICENSE and README files. FFmpeg
+<https://ffmpeg.org> is a separate program under the GNU LGPL v2.1 or later
+(GPL v3 when built with GPL components, as that build is); it is not part of
+this program and is run as an external executable for the export. FFmpeg's
+own license and source code are available at <https://ffmpeg.org/legal.html>.
+An ffmpeg already present in the PATH is used in the same way.
+
+The Python package opencv-python-headless ships its own copy of the FFmpeg
+libraries (opencv_videoio_ffmpeg*.dll, GNU LGPL v2.1 or later), which
+EditSimple uses through OpenCV to read video frames for the preview, the
+timeline and the subject tracking. The executable built with PyInstaller
+contains that library unmodified, as a separate DLL; its license is in the
+LICENSE-3RD-PARTY.txt file of opencv-python-headless, copied in the
+licenses folder next to the executable. Since EditSimple is free software,
+anyone can rebuild the executable with a different or modified copy of it.
+
+EditSimple uses the Python libraries CustomTkinter (CC0 1.0 in version
+6.0.0, MIT in earlier versions, with its dependencies darkdetect,
+BSD-3-Clause, and packaging, Apache 2.0 or BSD-2-Clause), Pillow (MIT-CMU),
+NumPy (BSD-3-Clause, with bundled components under 0BSD, MIT, Zlib and
+CC0 1.0) and OpenCV (opencv-python-headless, Apache License 2.0; the codecs
+and libraries built into it are under their own licenses, listed in its
+LICENSE-3RD-PARTY.txt). Each of them remains under its own license, as does
+the Python interpreter (PSF License). The executable built with PyInstaller
+contains them unmodified; scripts/build_exe.py copies their license files
+into the licenses folder next to the executable.
+
+Audio playback in the preview uses the Windows multimedia API (winmm), part
+of the operating system.
+
+
+TRACKING MODEL (DOWNLOADED ON REQUEST)
+======================================
+
+The subject tracking can use VitTrack (vision transformer tracker), a neural
+network model that is not part of this program and is not included in the
+executable. It is optional: without it EditSimple tracks with template
+matching only. When the user asks for it, the program downloads
+object_tracking_vittrack_2023sep.onnx from the official OpenCV model zoo
+<https://github.com/opencv/opencv_zoo/tree/main/models/object_tracking_vittrack>
+into the tools/vittrack/ folder next to it, checks it against the SHA-256
+fingerprint written in editsimple/tools.py, and saves next to it its license
+(Apache License 2.0) and a README.txt with its origin. The model was
+contributed by Pengyu Liu in Google Summer of Code 2023 for the OpenCV
+project; it is run by the DNN module of OpenCV as published.
+
+
+VIDEO IN THE USER MANUAL
+========================
+
+The screenshots of the user manual (docs/manual) show the video "Scena Urbana
+Affollata con Persone che Camminano" by dp singh Bhullar
+<https://www.pexels.com/@dpsinghbhullar/>, published on Pexels
+<https://www.pexels.com/video/29799947/> and used under the Pexels license
+<https://www.pexels.com/license/>. The video is not part of this program and is
+not distributed with it.
