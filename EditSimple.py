@@ -16,13 +16,30 @@ import sys
 
 
 def _fail(message: str) -> int:
-    """Segnala un avvio impossibile anche senza console (Avvia.bat usa pythonw)."""
+    """Segnala un avvio impossibile anche senza console (Avvia.bat usa pythonw; su Linux zenity o xmessage)."""
     if sys.stderr is not None:
         print(message, file=sys.stderr)
     if sys.platform == "win32":
         import ctypes
 
         ctypes.windll.user32.MessageBoxW(None, message, "EditSimple", 0x10)
+    elif message:
+        # Linux e altri Unix: finestra con zenity o xmessage, se ci sono (nessuna dipendenza nuova)
+        import shutil
+        import subprocess
+
+        for command in (
+            ["zenity", "--error", "--no-markup", "--title=EditSimple", "--text=" + message],
+            ["xmessage", "-center", message],
+        ):
+            if shutil.which(command[0]) is None:
+                continue
+            try:
+                done = subprocess.run(command, check=False)
+            except OSError:
+                continue
+            if done.returncode == 0:
+                break
     return 1
 
 
