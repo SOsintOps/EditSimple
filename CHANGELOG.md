@@ -3,6 +3,19 @@
 The most recent section is used by `scripts/build_exe.py --release` as the
 release notes: first the introduction, then the list of changes.
 
+## Unreleased
+
+- **Linux: mouse wheel**: the wheel now works on X11 in the preview and on the timeline, with its Ctrl and Shift variants; Tk delivers it there as buttons 4 and 5 instead of MouseWheel.
+- **Linux and macOS: open folder**: "Open tools folder" and "Open folder" after an export use xdg-open (Linux) or open (macOS); before, the first raised an error and the second did nothing.
+- **Linux and macOS: system fonts**: the font picker also lists the system fonts (/usr/share/fonts, /usr/local/share/fonts, ~/.local/share/fonts and ~/.fonts with their subfolders, and the macOS font folders).
+- **Linux and macOS: preview sound**: the audio preview plays through the first system player found among pw-cat, paplay, aplay and ffplay; without one it stays silent as before.
+- **Linux and macOS: window icon**: the program icon is set with iconphoto, since iconbitmap does not read .ico files there.
+- **Linux: resize cursors**: the handles of the selected item use X11 cursor names; before, every hover raised a Tk error.
+- **ffmpeg outside Windows**: the Configure page and the start-up warning explain how to install ffmpeg with the system package manager or put it in tools/ffmpeg/, and the Download / Update button is disabled.
+- **Start-up errors on Linux**: when the interface cannot start, the message is also shown with zenity or xmessage if one of them is installed.
+- **Linux launcher**: avvia.sh starts the program with .venv/bin/python, or python3 when there is no virtualenv; new "Linux" section in the README.
+- **SyntaxWarning at start**: fixed the invalid escape sequence in the docstring of editsimple/locales/__init__.py.
+
 ## 1.0.0
 
 First release of EditSimple, a simple video editor made to explain a fact or show evidence in a video: import the footage, point at what matters, and arrows, boxes, zooms and pixelations follow the subject on their own; where the tracking goes wrong, drag the figure back onto the subject. In a few minutes you get an MP4 ready to show, with opening and closing slides, texts, logo and the operator's signature.
