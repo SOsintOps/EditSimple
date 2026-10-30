@@ -229,6 +229,8 @@ CATALOG: dict[str, str] = {
         "Το ffmpeg δεν βρέθηκε. Κατεβάστε το από το πλαίσιο FFmpeg της σελίδας Διαμόρφωση: χωρίς αυτό δεν μπορείτε να εισαγάγετε ούτε να εξαγάγετε βίντεο.",
     "ffmpeg non e' stato trovato. Installalo con il gestore di pacchetti del sistema (per esempio sudo apt install ffmpeg) o copia un eseguibile ffmpeg in tools/ffmpeg/: senza, non si possono importare ne' esportare video.":
         "Το ffmpeg δεν βρέθηκε. Εγκαταστήστε το με τον διαχειριστή πακέτων του συστήματος (για παράδειγμα sudo apt install ffmpeg) ή αντιγράψτε ένα εκτελέσιμο ffmpeg στο tools/ffmpeg/: χωρίς αυτό δεν μπορείτε να εισαγάγετε ούτε να εξαγάγετε βίντεο.",
+    "ffmpeg NON trovato: installalo con il gestore di pacchetti del sistema (per esempio sudo apt install ffmpeg) oppure metti un eseguibile ffmpeg in tools/ffmpeg/.":
+        "Το ffmpeg ΔΕΝ βρέθηκε: εγκαταστήστε το με τον διαχειριστή πακέτων του συστήματος (για παράδειγμα sudo apt install ffmpeg) ή τοποθετήστε ένα εκτελέσιμο ffmpeg στο tools/ffmpeg/.",
     "Non salvare":
         "Χωρίς αποθήκευση",
     "Niente da annullare.":

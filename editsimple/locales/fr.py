@@ -143,6 +143,8 @@ CATALOG: dict[str, str] = {
         "ffmpeg introuvable. Téléchargez-le depuis le cadre FFmpeg de la page Configuration : sans lui, impossible d'importer ou d'exporter des vidéos.",
     "ffmpeg non e' stato trovato. Installalo con il gestore di pacchetti del sistema (per esempio sudo apt install ffmpeg) o copia un eseguibile ffmpeg in tools/ffmpeg/: senza, non si possono importare ne' esportare video.":
         "ffmpeg introuvable. Installez-le avec le gestionnaire de paquets du système (par exemple sudo apt install ffmpeg) ou copiez un exécutable ffmpeg dans tools/ffmpeg/ : sans lui, impossible d'importer ou d'exporter des vidéos.",
+    "ffmpeg NON trovato: installalo con il gestore di pacchetti del sistema (per esempio sudo apt install ffmpeg) oppure metti un eseguibile ffmpeg in tools/ffmpeg/.":
+        "ffmpeg INTROUVABLE : installez-le avec le gestionnaire de paquets du système (par exemple sudo apt install ffmpeg) ou placez un exécutable ffmpeg dans tools/ffmpeg/.",
     "Non salvare": "Ne pas enregistrer",
     "Niente da annullare.": "Rien à annuler.",
     "inizio": "début",

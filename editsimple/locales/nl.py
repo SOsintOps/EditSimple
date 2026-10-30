@@ -138,6 +138,8 @@ CATALOG: dict[str, str] = {
         "video's niet worden geïmporteerd of geëxporteerd.",
     "ffmpeg non e' stato trovato. Installalo con il gestore di pacchetti del sistema (per esempio sudo apt install ffmpeg) o copia un eseguibile ffmpeg in tools/ffmpeg/: senza, non si possono importare ne' esportare video.":
         "ffmpeg niet gevonden. Installeer het met de pakketbeheerder van het systeem (bijvoorbeeld sudo apt install ffmpeg) of kopieer een uitvoerbaar ffmpeg-bestand naar tools/ffmpeg/: zonder ffmpeg kunnen video's niet worden geïmporteerd of geëxporteerd.",
+    "ffmpeg NON trovato: installalo con il gestore di pacchetti del sistema (per esempio sudo apt install ffmpeg) oppure metti un eseguibile ffmpeg in tools/ffmpeg/.":
+        "ffmpeg NIET gevonden: installeer het met de pakketbeheerder van het systeem (bijvoorbeeld sudo apt install ffmpeg) of zet een uitvoerbaar ffmpeg-bestand in tools/ffmpeg/.",
     "Non salvare": "Niet opslaan",
     "Niente da annullare.": "Niets om ongedaan te maken.",
     "inizio": "begin",

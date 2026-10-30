@@ -749,7 +749,11 @@ class App(ctk.CTk):
                                                 where=where, path=status.path, version=status.version),
                                             text_color=theme.TEXT)
             else:
-                self.ffmpeg_label.configure(text=tr("ffmpeg NON trovato: scaricalo con il pulsante qui sotto."), text_color=theme.ERR)
+                if sys.platform == "win32":
+                    missing = tr("ffmpeg NON trovato: scaricalo con il pulsante qui sotto.")
+                else:
+                    missing = tr("ffmpeg NON trovato: installalo con il gestore di pacchetti del sistema (per esempio sudo apt install ffmpeg) oppure metti un eseguibile ffmpeg in tools/ffmpeg/.")
+                self.ffmpeg_label.configure(text=missing, text_color=theme.ERR)
 
         self.ffmpeg_label.configure(text=tr("Controllo in corso..."), text_color=theme.TEXT_DIM)
         threading.Thread(target=work, daemon=True).start()

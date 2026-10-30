@@ -229,6 +229,8 @@ CATALOG: dict[str, str] = {
         "ffmpeg wurde nicht gefunden. Laden Sie es im FFmpeg-Feld der Seite Konfiguration herunter: ohne ffmpeg lassen sich Videos weder importieren noch exportieren.",
     "ffmpeg non e' stato trovato. Installalo con il gestore di pacchetti del sistema (per esempio sudo apt install ffmpeg) o copia un eseguibile ffmpeg in tools/ffmpeg/: senza, non si possono importare ne' esportare video.":
         "ffmpeg wurde nicht gefunden. Installieren Sie es mit der Paketverwaltung des Systems (zum Beispiel sudo apt install ffmpeg) oder kopieren Sie eine ausführbare ffmpeg-Datei nach tools/ffmpeg/: ohne ffmpeg lassen sich Videos weder importieren noch exportieren.",
+    "ffmpeg NON trovato: installalo con il gestore di pacchetti del sistema (per esempio sudo apt install ffmpeg) oppure metti un eseguibile ffmpeg in tools/ffmpeg/.":
+        "ffmpeg wurde NICHT gefunden: Installieren Sie es mit der Paketverwaltung des Systems (zum Beispiel sudo apt install ffmpeg) oder legen Sie eine ausführbare ffmpeg-Datei in tools/ffmpeg/ ab.",
     "Non salvare":
         "Nicht speichern",
     "Niente da annullare.":

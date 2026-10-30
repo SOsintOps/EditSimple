@@ -148,6 +148,8 @@ CATALOG: dict[str, str] = {
         "të importohen as të eksportohen.",
     "ffmpeg non e' stato trovato. Installalo con il gestore di pacchetti del sistema (per esempio sudo apt install ffmpeg) o copia un eseguibile ffmpeg in tools/ffmpeg/: senza, non si possono importare ne' esportare video.":
         "ffmpeg nuk u gjet. Instalojeni me menaxherin e paketave të sistemit (për shembull sudo apt install ffmpeg) ose kopjoni një skedar ekzekutues ffmpeg në tools/ffmpeg/: pa të, videot nuk mund të importohen as të eksportohen.",
+    "ffmpeg NON trovato: installalo con il gestore di pacchetti del sistema (per esempio sudo apt install ffmpeg) oppure metti un eseguibile ffmpeg in tools/ffmpeg/.":
+        "ffmpeg NUK u gjet: instalojeni me menaxherin e paketave të sistemit (për shembull sudo apt install ffmpeg) ose vendosni një skedar ekzekutues ffmpeg në tools/ffmpeg/.",
     "Non salvare": "Mos ruaj",
     "Niente da annullare.": "Asgjë për të zhbërë.",
     "inizio": "fillimi",
