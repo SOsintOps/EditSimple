@@ -817,7 +817,7 @@ class App(ctk.CTk):
     def _open_folder(self, path) -> None:
         try:
             os.makedirs(path, exist_ok=True)
-            os.startfile(str(path))
+            tools.open_folder(path)
         except OSError as exc:
             messagebox.showerror(tr("Cartella"), str(exc), self)
 
@@ -2506,7 +2506,7 @@ class App(ctk.CTk):
                                        path=output, size=size, seconds=elapsed),
                                    self, yes=tr("Apri cartella"), no=tr("Chiudi")):
                 try:
-                    subprocess.Popen(["explorer", "/select,", os.path.normpath(output)])
+                    tools.open_folder(output, select=True)
                 except OSError:
                     pass
 

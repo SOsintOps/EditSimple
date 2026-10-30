@@ -14,6 +14,7 @@ globale, nessuna modifica al PATH: tutto resta dentro tools/.
 
 from __future__ import annotations
 
+import os
 import shutil
 import subprocess
 import sys
@@ -62,6 +63,25 @@ class Status:
     @property
     def present(self) -> bool:
         return self.path is not None
+
+
+def open_folder(path: str | os.PathLike, select: bool = False) -> None:
+    """Apre una cartella nel gestore di file del sistema.
+
+    Con `select` il percorso e' un file: su Windows Esplora risorse lo evidenzia,
+    altrove si apre la cartella che lo contiene (xdg-open su Linux, open su macOS).
+    """
+    target = os.path.normpath(str(path))
+    if sys.platform == "win32":
+        if select and os.path.isfile(target):
+            subprocess.Popen(["explorer", "/select,", target])
+        else:
+            os.startfile(target)   # pylint: disable=no-member
+        return
+    if select and os.path.isfile(target):
+        target = os.path.dirname(target)
+    opener = "open" if sys.platform == "darwin" else "xdg-open"
+    subprocess.Popen([opener, target], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
 def find() -> tuple[Path | None, str]:
