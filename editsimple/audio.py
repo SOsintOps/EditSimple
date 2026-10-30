@@ -8,13 +8,19 @@ grafo dell'esportazione (render.Exporter in modalita' solo audio), tenuto in
 memoria come campioni a 16 bit. Si riproduce da qualunque istante passando a
 waveOut la parte di memoria che serve, senza scrivere file; la posizione di
 riproduzione fa da orologio all'anteprima, cosi' video e audio restano allineati.
-Su sistemi diversi da Windows l'anteprima resta muta.
+Su Linux e macOS i campioni vengono passati in un flusso a un lettore del sistema
+(pw-cat, paplay, aplay o ffplay, il primo che c'e'), e l'orologio e' quello del
+processo; se non c'e' nessun lettore l'anteprima resta muta.
 """
 
 from __future__ import annotations
 
 import ctypes
+import shutil
+import subprocess
 import sys
+import threading
+import time
 import wave
 
 import numpy as np
@@ -54,8 +60,28 @@ if sys.platform == "win32":
     _winmm.waveOutGetPosition.argtypes = [ctypes.c_void_p, ctypes.POINTER(_MMTIME), ctypes.c_uint]
 
 
+# lettori a riga di comando che leggono campioni grezzi (s16le, 48 kHz, stereo) dallo standard input
+_PLAYERS: tuple[list[str], ...] = (
+    ["pw-cat", "--playback", "--raw", "--format=s16", "--rate=48000", "--channels=2", "-"],
+    ["paplay", "--raw", "--format=s16le", "--rate=48000", "--channels=2"],
+    ["aplay", "-q", "-t", "raw", "-f", "S16_LE", "-r", "48000", "-c", "2", "-"],
+    ["ffplay", "-nodisp", "-autoexit", "-loglevel", "quiet", "-f", "s16le", "-ar", "48000", "-ac", "2", "-i", "-"],
+)
+_player: list[str] | None = None
+
+
+def _player_command() -> list[str] | None:
+    """Il primo lettore disponibile (cercato una volta sola)."""
+    global _player
+    if _player is None:
+        _player = next((cmd for cmd in _PLAYERS if shutil.which(cmd[0])), [])
+    return _player or None
+
+
 def available() -> bool:
-    return sys.platform == "win32"
+    if sys.platform == "win32":
+        return True
+    return _player_command() is not None
 
 
 def load_wav(path: str) -> np.ndarray:
@@ -75,10 +101,13 @@ class AudioPlayer:
         self._hdr = None
         self._buffer = None
         self._start = 0.0
+        self._proc: subprocess.Popen | None = None      # lettore esterno (Linux, macOS)
+        self._writer: threading.Thread | None = None
+        self._t0 = 0.0
 
     @property
     def playing(self) -> bool:
-        return self._hwo is not None
+        return self._hwo is not None or self._proc is not None
 
     def set_samples(self, samples: np.ndarray | None) -> None:
         self.stop()
@@ -96,6 +125,8 @@ class AudioPlayer:
         if first >= len(self.samples):
             return False
         self._buffer = np.ascontiguousarray(self.samples[first:])
+        if sys.platform != "win32":
+            return self._play_external(t)
         fmt = _WAVEFORMATEX(1, CHANNELS, RATE, RATE * CHANNELS * 2, CHANNELS * 2, 16, 0)
         hwo = ctypes.c_void_p()
         if _winmm.waveOutOpen(ctypes.byref(hwo), _WAVE_MAPPER, ctypes.byref(fmt), 0, 0, 0) != 0:
@@ -109,8 +140,36 @@ class AudioPlayer:
         self._hwo, self._hdr, self._start = hwo, hdr, t
         return True
 
+    def _play_external(self, t: float) -> bool:
+        """Passa i campioni al lettore del sistema da un thread; il tempo e' contato da qui."""
+        command = _player_command()
+        if command is None:
+            self._buffer = None
+            return False
+        try:
+            proc = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.DEVNULL,
+                                    stderr=subprocess.DEVNULL)
+        except OSError:
+            self._buffer = None
+            return False
+        data = self._buffer.tobytes()
+
+        def feed() -> None:
+            try:
+                proc.stdin.write(data)
+                proc.stdin.close()
+            except (OSError, ValueError):
+                pass                                  # fermato prima della fine: il tubo e' chiuso
+
+        self._writer = threading.Thread(target=feed, daemon=True)
+        self._writer.start()
+        self._proc, self._t0, self._start = proc, time.perf_counter(), t
+        return True
+
     def position(self) -> float | None:
         """Istante della timeline che si sta sentendo (None se non suona)."""
+        if self._proc is not None:
+            return self._start + (time.perf_counter() - self._t0)
         if self._hwo is None:
             return None
         mm = _MMTIME()
@@ -120,6 +179,21 @@ class AudioPlayer:
         return self._start + mm.u[0] / RATE
 
     def stop(self) -> None:
+        if self._proc is not None:
+            proc, self._proc = self._proc, None
+            try:
+                proc.kill()
+            except OSError:
+                pass
+            try:
+                proc.stdin.close()
+            except (OSError, ValueError):
+                pass
+            proc.wait()
+            if self._writer is not None:
+                self._writer.join(timeout=1)
+                self._writer = None
+            self._buffer = None
         if self._hwo is None:
             return
         _winmm.waveOutReset(self._hwo)
