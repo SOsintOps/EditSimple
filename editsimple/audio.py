@@ -70,11 +70,27 @@ _PLAYERS: tuple[list[str], ...] = (
 _player: list[str] | None = None
 
 
+def _usable(cmd: list[str]) -> bool:
+    """Il lettore c'e' e, per pw-cat, conosce --raw."""
+    if not shutil.which(cmd[0]):
+        return False
+    if cmd[0] != "pw-cat":
+        return True
+    # le versioni di pw-cat prima dell'opzione --raw (per esempio quella di Ubuntu 24.04) rispondono
+    # "unrecognized option" ed escono subito: senza --raw leggerebbe un contenitore WAV, non campioni
+    # grezzi, quindi se l'aiuto non la cita si passa al lettore dopo
+    try:
+        out = subprocess.run([cmd[0], "--help"], capture_output=True, text=True, timeout=3)
+    except (OSError, subprocess.SubprocessError):
+        return False
+    return "--raw" in (out.stdout or "") + (out.stderr or "")
+
+
 def _player_command() -> list[str] | None:
-    """Il primo lettore disponibile (cercato una volta sola)."""
+    """Il primo lettore utilizzabile (cercato una volta sola)."""
     global _player
     if _player is None:
-        _player = next((cmd for cmd in _PLAYERS if shutil.which(cmd[0])), [])
+        _player = next((cmd for cmd in _PLAYERS if _usable(cmd)), [])
     return _player or None
 
 
