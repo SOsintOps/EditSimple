@@ -44,6 +44,26 @@ class Card(ctk.CTkFrame):
         self.title_label.configure(text=upper(again(self._title)))
 
 
+def bind_wheel(widget, callback, modifier: str = "") -> None:
+    """Lega la rotella del mouse a `callback(event)` su ogni sistema.
+
+    Su Windows e macOS arriva <MouseWheel> con `event.delta`; su X11 (Linux)
+    arrivano invece <Button-4> (su) e <Button-5> (giu') senza delta: qui si
+    riempie `event.delta` con +120/-120, cosi' il gestore resta uno solo.
+    `modifier` e' ad esempio "Control-" o "Shift-".
+    """
+    widget.bind(f"<{modifier}MouseWheel>", callback)
+
+    def with_delta(delta: int):
+        def handler(event):
+            event.delta = delta
+            return callback(event)
+        return handler
+
+    widget.bind(f"<{modifier}Button-4>", with_delta(120))
+    widget.bind(f"<{modifier}Button-5>", with_delta(-120))
+
+
 def button(parent, text: str, command, primary: bool = False, width: int = 0,
            danger: bool = False, **kwargs) -> ctk.CTkButton:
     """Pulsante principale (accento), secondario (neutro) o distruttivo (bordo rosso)."""

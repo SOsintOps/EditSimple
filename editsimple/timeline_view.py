@@ -24,7 +24,7 @@ import customtkinter as ctk
 import cv2
 from PIL import Image, ImageTk
 
-from . import media, theme
+from . import media, theme, widgets
 from .i18n import tr, upper
 from .project import EFFECT_NAMES, Project, clip_duration, clip_label
 
@@ -250,10 +250,10 @@ class TimelineView(ctk.CTkFrame):
         self.tracks.bind("<B1-Motion>", self._motion)
         self.tracks.bind("<ButtonRelease-1>", self._release)
         self.tracks.bind("<Motion>", self._hover)
-        self.tracks.bind("<MouseWheel>", self._wheel)
-        self.tracks.bind("<Control-MouseWheel>", self._wheel)
-        self.tracks.bind("<Shift-MouseWheel>", self._vwheel)
-        self.labels.bind("<MouseWheel>", self._vwheel)
+        widgets.bind_wheel(self.tracks, self._wheel)
+        widgets.bind_wheel(self.tracks, self._wheel, "Control-")
+        widgets.bind_wheel(self.tracks, self._vwheel, "Shift-")
+        widgets.bind_wheel(self.labels, self._vwheel)
         self.labels.bind("<ButtonPress-1>", self._label_press)
         self.after(150, self._poll_thumbs)
 

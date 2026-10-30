@@ -18,7 +18,7 @@ from typing import Callable
 import customtkinter as ctk
 from PIL import Image, ImageTk
 
-from . import overlays, theme
+from . import overlays, theme, widgets
 from .i18n import N_, tr
 
 HANDLE = 6
@@ -89,8 +89,8 @@ class PreviewView(ctk.CTkFrame):
         self.canvas.bind("<B1-Motion>", self._motion)
         self.canvas.bind("<ButtonRelease-1>", self._release)
         self.canvas.bind("<Motion>", self._hover)
-        self.canvas.bind("<MouseWheel>", self._wheel)
-        self.canvas.bind("<Control-MouseWheel>", self._zoom_wheel)
+        widgets.bind_wheel(self.canvas, self._wheel)
+        widgets.bind_wheel(self.canvas, self._zoom_wheel, "Control-")
         # spostare la vista ingrandita: tasto centrale o Alt+trascina; doppio clic centrale = adatta
         for press, motion, release in (("<ButtonPress-2>", "<B2-Motion>", "<ButtonRelease-2>"),
                                        ("<Alt-ButtonPress-1>", "<Alt-B1-Motion>", "<Alt-ButtonRelease-1>")):
