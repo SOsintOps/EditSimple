@@ -227,6 +227,8 @@ CATALOG: dict[str, str] = {
         "Bereit.",
     "ffmpeg non e' stato trovato. Scaricalo dal riquadro FFmpeg della pagina Configurazione: senza, non si possono importare ne' esportare video.":
         "ffmpeg wurde nicht gefunden. Laden Sie es im FFmpeg-Feld der Seite Konfiguration herunter: ohne ffmpeg lassen sich Videos weder importieren noch exportieren.",
+    "ffmpeg non e' stato trovato. Installalo con il gestore di pacchetti del sistema (per esempio sudo apt install ffmpeg) o copia un eseguibile ffmpeg in tools/ffmpeg/: senza, non si possono importare ne' esportare video.":
+        "ffmpeg wurde nicht gefunden. Installieren Sie es mit der Paketverwaltung des Systems (zum Beispiel sudo apt install ffmpeg) oder kopieren Sie eine ausführbare ffmpeg-Datei nach tools/ffmpeg/: ohne ffmpeg lassen sich Videos weder importieren noch exportieren.",
     "Non salvare":
         "Nicht speichern",
     "Niente da annullare.":
@@ -315,6 +317,8 @@ CATALOG: dict[str, str] = {
         "Export abgeschlossen",
     "ffmpeg non e' incluso nel programma: e' un programma separato con la propria licenza. Scarica / Aggiorna prende il build ufficiale per Windows (release essentials) da gyan.dev e tiene solo ffmpeg.exe, LICENSE e README in tools/ffmpeg/. Nessuna installazione, nessuna modifica al PATH.":
         "ffmpeg ist nicht im Programm enthalten: es ist ein separates Programm mit eigener Lizenz. Herunterladen / Aktualisieren holt den offiziellen Windows-Build (release essentials) von gyan.dev und behält nur ffmpeg.exe, LICENSE und README in tools/ffmpeg/. Keine Installation, keine Änderung am PATH.",
+    "ffmpeg non e' incluso nel programma: e' un programma separato con la propria licenza. Su Linux e macOS si installa con il gestore di pacchetti del sistema (per esempio sudo apt install ffmpeg) oppure si mette un eseguibile ffmpeg in tools/ffmpeg/. Il download automatico vale solo per Windows.":
+        "ffmpeg ist nicht im Programm enthalten: es ist ein separates Programm mit eigener Lizenz. Unter Linux und macOS installieren Sie es mit der Paketverwaltung des Systems (zum Beispiel sudo apt install ffmpeg) oder legen eine ausführbare ffmpeg-Datei in tools/ffmpeg/ ab. Der automatische Download gilt nur für Windows.",
     "Scarica / Aggiorna":
         "Herunterladen / Aktualisieren",
     "Apri cartella tools":

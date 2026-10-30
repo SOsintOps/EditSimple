@@ -227,6 +227,8 @@ CATALOG: dict[str, str] = {
         "Έτοιμο.",
     "ffmpeg non e' stato trovato. Scaricalo dal riquadro FFmpeg della pagina Configurazione: senza, non si possono importare ne' esportare video.":
         "Το ffmpeg δεν βρέθηκε. Κατεβάστε το από το πλαίσιο FFmpeg της σελίδας Διαμόρφωση: χωρίς αυτό δεν μπορείτε να εισαγάγετε ούτε να εξαγάγετε βίντεο.",
+    "ffmpeg non e' stato trovato. Installalo con il gestore di pacchetti del sistema (per esempio sudo apt install ffmpeg) o copia un eseguibile ffmpeg in tools/ffmpeg/: senza, non si possono importare ne' esportare video.":
+        "Το ffmpeg δεν βρέθηκε. Εγκαταστήστε το με τον διαχειριστή πακέτων του συστήματος (για παράδειγμα sudo apt install ffmpeg) ή αντιγράψτε ένα εκτελέσιμο ffmpeg στο tools/ffmpeg/: χωρίς αυτό δεν μπορείτε να εισαγάγετε ούτε να εξαγάγετε βίντεο.",
     "Non salvare":
         "Χωρίς αποθήκευση",
     "Niente da annullare.":
@@ -315,6 +317,8 @@ CATALOG: dict[str, str] = {
         "Η εξαγωγή ολοκληρώθηκε",
     "ffmpeg non e' incluso nel programma: e' un programma separato con la propria licenza. Scarica / Aggiorna prende il build ufficiale per Windows (release essentials) da gyan.dev e tiene solo ffmpeg.exe, LICENSE e README in tools/ffmpeg/. Nessuna installazione, nessuna modifica al PATH.":
         "Το ffmpeg δεν περιλαμβάνεται στο πρόγραμμα: είναι ξεχωριστό πρόγραμμα με δική του άδεια. Η Λήψη / Ενημέρωση παίρνει την επίσημη έκδοση για Windows (release essentials) από το gyan.dev και κρατά μόνο τα ffmpeg.exe, LICENSE και README στο tools/ffmpeg/. Καμία εγκατάσταση, καμία αλλαγή στο PATH.",
+    "ffmpeg non e' incluso nel programma: e' un programma separato con la propria licenza. Su Linux e macOS si installa con il gestore di pacchetti del sistema (per esempio sudo apt install ffmpeg) oppure si mette un eseguibile ffmpeg in tools/ffmpeg/. Il download automatico vale solo per Windows.":
+        "Το ffmpeg δεν περιλαμβάνεται στο πρόγραμμα: είναι ξεχωριστό πρόγραμμα με δική του άδεια. Σε Linux και macOS εγκαθίσταται με τον διαχειριστή πακέτων του συστήματος (για παράδειγμα sudo apt install ffmpeg) ή τοποθετείται ένα εκτελέσιμο ffmpeg στο tools/ffmpeg/. Η αυτόματη λήψη ισχύει μόνο για Windows.",
     "Scarica / Aggiorna":
         "Λήψη / Ενημέρωση",
     "Apri cartella tools":

@@ -131,6 +131,8 @@ CATALOG: dict[str, str] = {
     "Pronto.": "Ready.",
     "ffmpeg non e' stato trovato. Scaricalo dal riquadro FFmpeg della pagina Configurazione: senza, non si possono importare ne' esportare video.":
         "ffmpeg was not found. Download it from the FFmpeg box of the Configuration page: without it, videos can be neither imported nor exported.",
+    "ffmpeg non e' stato trovato. Installalo con il gestore di pacchetti del sistema (per esempio sudo apt install ffmpeg) o copia un eseguibile ffmpeg in tools/ffmpeg/: senza, non si possono importare ne' esportare video.":
+        "ffmpeg was not found. Install it with the system package manager (for example sudo apt install ffmpeg) or copy an ffmpeg executable into tools/ffmpeg/: without it, videos can be neither imported nor exported.",
     "Non salvare": "Don't save",
     "Niente da annullare.": "Nothing to undo.",
     "inizio": "start",
@@ -188,6 +190,8 @@ CATALOG: dict[str, str] = {
     "Esportazione completata": "Export completed",
     "ffmpeg non e' incluso nel programma: e' un programma separato con la propria licenza. Scarica / Aggiorna prende il build ufficiale per Windows (release essentials) da gyan.dev e tiene solo ffmpeg.exe, LICENSE e README in tools/ffmpeg/. Nessuna installazione, nessuna modifica al PATH.":
         "ffmpeg is not included in the program: it is a separate program with its own license. Download / Update takes the official Windows build (release essentials) from gyan.dev and keeps only ffmpeg.exe, LICENSE and README in tools/ffmpeg/. No installation, no change to the PATH.",
+    "ffmpeg non e' incluso nel programma: e' un programma separato con la propria licenza. Su Linux e macOS si installa con il gestore di pacchetti del sistema (per esempio sudo apt install ffmpeg) oppure si mette un eseguibile ffmpeg in tools/ffmpeg/. Il download automatico vale solo per Windows.":
+        "ffmpeg is not included in the program: it is a separate program with its own license. On Linux and macOS install it with the system package manager (for example sudo apt install ffmpeg) or put an ffmpeg executable in tools/ffmpeg/. The automatic download is for Windows only.",
     "Scarica / Aggiorna": "Download / Update",
     "Apri cartella tools": "Open tools folder",
     "VitTrack e' un modello addestrato per seguire oggetti e persone: ritrova il soggetto dopo un palo o un passante e capisce quando e' perso. Viene dal repository ufficiale opencv_zoo (licenza Apache 2.0, compatibile con la GPL 3), circa 0,7 MB, in tools/vittrack/ con la sua licenza. Senza, l'inseguimento usa il confronto a modello.":

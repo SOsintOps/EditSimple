@@ -425,13 +425,22 @@ class App(ctk.CTk):
         ff.pack(fill="x")
         self.ffmpeg_label = ctk.CTkLabel(ff.body, text="", font=self.fonts.body, anchor="w", justify="left", wraplength=420)
         self.ffmpeg_label.pack(fill="x")
-        widgets.note(ff.body, tr("ffmpeg non e' incluso nel programma: e' un programma separato con la propria licenza. "
-                                 "Scarica / Aggiorna prende il build ufficiale per Windows (release essentials) da gyan.dev "
-                                 "e tiene solo ffmpeg.exe, LICENSE e README in tools/ffmpeg/. Nessuna installazione, "
-                                 "nessuna modifica al PATH."), self.fonts, wraplength=420).pack(fill="x", pady=(8, 0))
+        # fuori da Windows il download automatico non c'e': la nota spiega come avere ffmpeg
+        if sys.platform == "win32":
+            ffmpeg_note = tr("ffmpeg non e' incluso nel programma: e' un programma separato con la propria licenza. "
+                             "Scarica / Aggiorna prende il build ufficiale per Windows (release essentials) da gyan.dev "
+                             "e tiene solo ffmpeg.exe, LICENSE e README in tools/ffmpeg/. Nessuna installazione, "
+                             "nessuna modifica al PATH.")
+        else:
+            ffmpeg_note = tr("ffmpeg non e' incluso nel programma: e' un programma separato con la propria licenza. "
+                             "Su Linux e macOS si installa con il gestore di pacchetti del sistema "
+                             "(per esempio sudo apt install ffmpeg) oppure si mette un eseguibile ffmpeg in "
+                             "tools/ffmpeg/. Il download automatico vale solo per Windows.")
+        widgets.note(ff.body, ffmpeg_note, self.fonts, wraplength=420).pack(fill="x", pady=(8, 0))
         row = ctk.CTkFrame(ff.body, fg_color="transparent")
         row.pack(fill="x", pady=(10, 0))
-        widgets.button(row, tr("Scarica / Aggiorna"), self.download_ffmpeg, primary=True, width=150).pack(side="left")
+        download_state = "normal" if sys.platform == "win32" else "disabled"  # il download prende il build per Windows
+        widgets.button(row, tr("Scarica / Aggiorna"), self.download_ffmpeg, primary=True, width=150, state=download_state).pack(side="left")
         widgets.button(row, tr("Apri cartella tools"), lambda: self._open_folder(tools.TOOLS_DIR), width=150).pack(side="left", padx=(8, 0))
 
         vt = widgets.Card(left, tr("Inseguimento (VitTrack)"), self.fonts)
@@ -860,8 +869,14 @@ class App(ctk.CTk):
         path, _source = tools.find()
         if path is None:
             self.show_page("settings")
-            messagebox.showwarning("ffmpeg", tr("ffmpeg non e' stato trovato. Scaricalo dal riquadro FFmpeg della pagina "
-                                                "Configurazione: senza, non si possono importare ne' esportare video."), self)
+            if sys.platform == "win32":
+                message = tr("ffmpeg non e' stato trovato. Scaricalo dal riquadro FFmpeg della pagina "
+                             "Configurazione: senza, non si possono importare ne' esportare video.")
+            else:
+                message = tr("ffmpeg non e' stato trovato. Installalo con il gestore di pacchetti del sistema "
+                             "(per esempio sudo apt install ffmpeg) o copia un eseguibile ffmpeg in "
+                             "tools/ffmpeg/: senza, non si possono importare ne' esportare video.")
+            messagebox.showwarning("ffmpeg", message, self)
         if initial:
             if initial.lower().endswith(".json"):
                 self._load_project(initial)

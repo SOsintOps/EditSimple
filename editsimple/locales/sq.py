@@ -146,6 +146,8 @@ CATALOG: dict[str, str] = {
     "ffmpeg non e' stato trovato. Scaricalo dal riquadro FFmpeg della pagina Configurazione: senza, non si possono importare ne' esportare video.":
         "ffmpeg nuk u gjet. Shkarkojeni nga kutia FFmpeg e faqes Konfigurimi: pa të, videot nuk mund "
         "të importohen as të eksportohen.",
+    "ffmpeg non e' stato trovato. Installalo con il gestore di pacchetti del sistema (per esempio sudo apt install ffmpeg) o copia un eseguibile ffmpeg in tools/ffmpeg/: senza, non si possono importare ne' esportare video.":
+        "ffmpeg nuk u gjet. Instalojeni me menaxherin e paketave të sistemit (për shembull sudo apt install ffmpeg) ose kopjoni një skedar ekzekutues ffmpeg në tools/ffmpeg/: pa të, videot nuk mund të importohen as të eksportohen.",
     "Non salvare": "Mos ruaj",
     "Niente da annullare.": "Asgjë për të zhbërë.",
     "inizio": "fillimi",
@@ -209,6 +211,8 @@ CATALOG: dict[str, str] = {
         "ffmpeg nuk përfshihet në program: është një program i veçantë me licencën e vet. Shkarko / Përditëso "
         "merr versionin zyrtar për Windows (release essentials) nga gyan.dev dhe mban vetëm ffmpeg.exe, "
         "LICENSE dhe README në tools/ffmpeg/. Pa instalim, pa ndryshime në PATH.",
+    "ffmpeg non e' incluso nel programma: e' un programma separato con la propria licenza. Su Linux e macOS si installa con il gestore di pacchetti del sistema (per esempio sudo apt install ffmpeg) oppure si mette un eseguibile ffmpeg in tools/ffmpeg/. Il download automatico vale solo per Windows.":
+        "ffmpeg nuk përfshihet në program: është një program i veçantë me licencën e vet. Në Linux dhe macOS instalohet me menaxherin e paketave të sistemit (për shembull sudo apt install ffmpeg) ose vendoset një skedar ekzekutues ffmpeg në tools/ffmpeg/. Shkarkimi automatik vlen vetëm për Windows.",
     "Scarica / Aggiorna": "Shkarko / Përditëso",
     "Apri cartella tools": "Hap dosjen tools",
     "VitTrack e' un modello addestrato per seguire oggetti e persone: ritrova il soggetto dopo un palo o un passante e capisce quando e' perso. Viene dal repository ufficiale opencv_zoo (licenza Apache 2.0, compatibile con la GPL 3), circa 0,7 MB, in tools/vittrack/ con la sua licenza. Senza, l'inseguimento usa il confronto a modello.":

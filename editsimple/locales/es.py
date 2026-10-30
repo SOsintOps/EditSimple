@@ -141,6 +141,8 @@ CATALOG: dict[str, str] = {
     "ffmpeg non e' stato trovato. Scaricalo dal riquadro FFmpeg della pagina Configurazione: senza, non si possono importare ne' esportare video.":
         "ffmpeg no encontrado. Descárguelo desde el recuadro FFmpeg de la página Configuración: "
         "sin él no se pueden importar ni exportar vídeos.",
+    "ffmpeg non e' stato trovato. Installalo con il gestore di pacchetti del sistema (per esempio sudo apt install ffmpeg) o copia un eseguibile ffmpeg in tools/ffmpeg/: senza, non si possono importare ne' esportare video.":
+        "ffmpeg no encontrado. Instálelo con el gestor de paquetes del sistema (por ejemplo sudo apt install ffmpeg) o copie un ejecutable de ffmpeg en tools/ffmpeg/: sin él no se pueden importar ni exportar vídeos.",
     "Non salvare": "No guardar",
     "Niente da annullare.": "Nada que deshacer.",
     "inizio": "inicio",
@@ -205,6 +207,8 @@ CATALOG: dict[str, str] = {
         "Descargar / Actualizar toma la compilación oficial para Windows (release essentials) de gyan.dev "
         "y conserva solo ffmpeg.exe, LICENSE y README en tools/ffmpeg/. "
         "Sin instalación, sin cambios en el PATH.",
+    "ffmpeg non e' incluso nel programma: e' un programma separato con la propria licenza. Su Linux e macOS si installa con il gestore di pacchetti del sistema (per esempio sudo apt install ffmpeg) oppure si mette un eseguibile ffmpeg in tools/ffmpeg/. Il download automatico vale solo per Windows.":
+        "ffmpeg no está incluido en el programa: es un programa aparte con su propia licencia. En Linux y macOS se instala con el gestor de paquetes del sistema (por ejemplo sudo apt install ffmpeg) o se coloca un ejecutable de ffmpeg en tools/ffmpeg/. La descarga automática solo está disponible en Windows.",
     "Scarica / Aggiorna": "Descargar / Actualizar",
     "Apri cartella tools": "Abrir carpeta tools",
     "VitTrack e' un modello addestrato per seguire oggetti e persone: ritrova il soggetto dopo un palo o un passante e capisce quando e' perso. Viene dal repository ufficiale opencv_zoo (licenza Apache 2.0, compatibile con la GPL 3), circa 0,7 MB, in tools/vittrack/ con la sua licenza. Senza, l'inseguimento usa il confronto a modello.":

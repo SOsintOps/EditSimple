@@ -136,6 +136,8 @@ CATALOG: dict[str, str] = {
     "ffmpeg non e' stato trovato. Scaricalo dal riquadro FFmpeg della pagina Configurazione: senza, non si possono importare ne' esportare video.":
         "ffmpeg niet gevonden. Download het via het vak FFmpeg op de pagina Configuratie: zonder ffmpeg kunnen "
         "video's niet worden geïmporteerd of geëxporteerd.",
+    "ffmpeg non e' stato trovato. Installalo con il gestore di pacchetti del sistema (per esempio sudo apt install ffmpeg) o copia un eseguibile ffmpeg in tools/ffmpeg/: senza, non si possono importare ne' esportare video.":
+        "ffmpeg niet gevonden. Installeer het met de pakketbeheerder van het systeem (bijvoorbeeld sudo apt install ffmpeg) of kopieer een uitvoerbaar ffmpeg-bestand naar tools/ffmpeg/: zonder ffmpeg kunnen video's niet worden geïmporteerd of geëxporteerd.",
     "Non salvare": "Niet opslaan",
     "Niente da annullare.": "Niets om ongedaan te maken.",
     "inizio": "begin",
@@ -198,6 +200,8 @@ CATALOG: dict[str, str] = {
         "ffmpeg zit niet in het programma: het is een apart programma met een eigen licentie. Downloaden / Bijwerken "
         "haalt de officiële Windows-build (release essentials) van gyan.dev en bewaart alleen ffmpeg.exe, LICENSE en "
         "README in tools/ffmpeg/. Geen installatie, geen wijzigingen aan het PATH.",
+    "ffmpeg non e' incluso nel programma: e' un programma separato con la propria licenza. Su Linux e macOS si installa con il gestore di pacchetti del sistema (per esempio sudo apt install ffmpeg) oppure si mette un eseguibile ffmpeg in tools/ffmpeg/. Il download automatico vale solo per Windows.":
+        "ffmpeg zit niet in het programma: het is een apart programma met een eigen licentie. Op Linux en macOS installeert u het met de pakketbeheerder van het systeem (bijvoorbeeld sudo apt install ffmpeg) of zet u een uitvoerbaar ffmpeg-bestand in tools/ffmpeg/. Automatisch downloaden is alleen beschikbaar op Windows.",
     "Scarica / Aggiorna": "Downloaden / Bijwerken",
     "Apri cartella tools": "Map tools openen",
     "VitTrack e' un modello addestrato per seguire oggetti e persone: ritrova il soggetto dopo un palo o un passante e capisce quando e' perso. Viene dal repository ufficiale opencv_zoo (licenza Apache 2.0, compatibile con la GPL 3), circa 0,7 MB, in tools/vittrack/ con la sua licenza. Senza, l'inseguimento usa il confronto a modello.":
