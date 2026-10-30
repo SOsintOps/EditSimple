@@ -12,6 +12,7 @@ pixelatura). Le coordinate passate alle callback sono in pixel del progetto.
 from __future__ import annotations
 
 import math
+import sys
 import tkinter as tk
 from typing import Callable
 
@@ -19,6 +20,13 @@ import customtkinter as ctk
 from PIL import Image, ImageTk
 
 from . import overlays, theme, widgets
+
+# cursori di ridimensionamento diagonale: i nomi "size_*" esistono solo su Windows e macOS,
+# su X11 Tk rifiuta il cursore ("bad cursor spec") e il gestore del movimento fallisce
+if sys.platform == "win32" or sys.platform == "darwin":
+    NW_SE, NE_SW = "size_nw_se", "size_ne_sw"
+else:
+    NW_SE, NE_SW = "top_left_corner", "top_right_corner"
 from .i18n import N_, tr
 
 HANDLE = 6
@@ -463,8 +471,8 @@ class PreviewView(ctk.CTkFrame):
         if self.mode or self._drag or self._image is None:
             return
         hit = self._hit(event.x, event.y)
-        cursor = {"nw": "size_nw_se", "se": "size_nw_se", "ne": "size_ne_sw", "sw": "size_ne_sw",
-                  "inw": "size_nw_se", "ise": "size_nw_se", "ine": "size_ne_sw", "isw": "size_ne_sw",
+        cursor = {"nw": NW_SE, "se": NW_SE, "ne": NE_SW, "sw": NE_SW,
+                  "inw": NW_SE, "ise": NW_SE, "ine": NE_SW, "isw": NE_SW,
                   "move": "fleur", "imove": "fleur", "p1": "hand2", "p2": "hand2"}.get(
             hit, "fleur" if self.view_zoom > 1 else "arrow")
         self.canvas.configure(cursor=cursor)
