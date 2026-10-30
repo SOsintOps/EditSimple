@@ -284,6 +284,17 @@ def set_icon(window) -> None:
     """Icona dell'applicazione sulla finestra (e, per la principale, nella barra di Windows)."""
     if not ICON_FILE.is_file():
         return
+    if sys.platform != "win32":
+        # X11 e macOS non leggono i file .ico con iconbitmap: si passa l'immagine con iconphoto
+        try:
+            from PIL import Image, ImageTk
+
+            photo = ImageTk.PhotoImage(Image.open(ICON_FILE).convert("RGBA"))
+            window.iconphoto(isinstance(window, ctk.CTk), photo)
+            window._editsimple_icon = photo      # Tk tiene solo un riferimento debole
+        except (OSError, tk.TclError):
+            pass
+        return
     try:
         if isinstance(window, ctk.CTk):
             window.iconbitmap(default=str(ICON_FILE))
