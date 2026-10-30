@@ -5,6 +5,7 @@
 
 from __future__ import annotations
 
+import sys
 import tkinter as tk
 from typing import Any, Callable
 
@@ -47,12 +48,15 @@ class Card(ctk.CTkFrame):
 def bind_wheel(widget, callback, modifier: str = "") -> None:
     """Lega la rotella del mouse a `callback(event)` su ogni sistema.
 
-    Su Windows e macOS arriva <MouseWheel> con `event.delta`; su X11 (Linux)
-    arrivano invece <Button-4> (su) e <Button-5> (giu') senza delta: qui si
-    riempie `event.delta` con +120/-120, cosi' il gestore resta uno solo.
+    Su Windows e macOS arriva <MouseWheel> con `event.delta`: e' l'unico
+    legame. Su X11 (Linux) arrivano invece <Button-4> (su) e <Button-5>
+    (giu') senza delta, e solo li' vengono legati: si riempie `event.delta`
+    con +120/-120, cosi' il gestore resta uno solo.
     `modifier` e' ad esempio "Control-" o "Shift-".
     """
     widget.bind(f"<{modifier}MouseWheel>", callback)
+    if sys.platform in ("win32", "darwin"):
+        return
 
     def with_delta(delta: int):
         def handler(event):
