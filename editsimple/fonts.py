@@ -25,12 +25,29 @@ from .config import APP_DIR
 from .i18n import tr
 
 FONT_DIR = APP_DIR / "font"
-BUNDLED_DIR = Path(getattr(sys, "_MEIPASS", "")) / "font"   # dentro l'eseguibile PyInstaller
-SYSTEM_DIRS = [
-    BUNDLED_DIR,
-    Path(os.environ.get("WINDIR", r"C:\Windows")) / "Fonts",
-    Path(os.environ.get("LOCALAPPDATA", "")) / "Microsoft" / "Windows" / "Fonts",
-]
+
+
+def _system_dirs() -> list[Path]:
+    """Cartelle dei caratteri: quella dentro l'eseguibile PyInstaller, poi quelle del sistema."""
+    dirs: list[Path] = []
+    bundle = getattr(sys, "_MEIPASS", "")
+    if bundle:
+        dirs.append(Path(bundle) / "font")
+    if sys.platform == "win32":
+        dirs.append(Path(os.environ.get("WINDIR", r"C:\Windows")) / "Fonts")
+        local = os.environ.get("LOCALAPPDATA", "")
+        if local:
+            dirs.append(Path(local) / "Microsoft" / "Windows" / "Fonts")
+    elif sys.platform == "darwin":
+        dirs += [Path("/System/Library/Fonts"), Path("/Library/Fonts"), Path.home() / "Library" / "Fonts"]
+    else:
+        # Linux e altri Unix: cartelle di fontconfig (i file stanno in sottocartelle)
+        dirs += [Path("/usr/share/fonts"), Path("/usr/local/share/fonts"),
+                 Path.home() / ".local" / "share" / "fonts", Path.home() / ".fonts"]
+    return dirs
+
+
+SYSTEM_DIRS = _system_dirs()
 EXTENSIONS = (".ttf", ".otf")
 DEFAULT_FONT = "DejaVuSans-Bold.ttf"
 PREFERRED = ["segoeuib.ttf", "arialbd.ttf", "DejaVuSans-Bold.ttf"]
@@ -42,14 +59,17 @@ _loaded: dict[tuple[str, int], ImageFont.FreeTypeFont] = {}
 def _scan() -> dict[str, str]:
     if _paths:
         return _paths
+    seen: set[str] = set()
     for folder in [FONT_DIR] + SYSTEM_DIRS:
-        try:
-            names = sorted(os.listdir(folder), key=str.lower)
-        except OSError:
+        if not folder.is_dir():
             continue
-        for name in names:
-            if name.lower().endswith(EXTENSIONS) and name.lower() not in {k.lower() for k in _paths}:
-                _paths[name] = str(folder / name)
+        for root, subdirs, files in os.walk(folder):
+            subdirs.sort(key=str.lower)
+            for name in sorted(files, key=str.lower):
+                low = name.lower()
+                if low.endswith(EXTENSIONS) and low not in seen:
+                    seen.add(low)
+                    _paths[name] = os.path.join(root, name)
     return _paths
 
 
