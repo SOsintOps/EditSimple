@@ -6,7 +6,7 @@
 Ogni modulo espone NAME (il nome della lingua, scritto in quella lingua) e
 CATALOG, il dizionario testo italiano -> traduzione. L'italiano e' la lingua
 dei testi nel codice e non ha catalogo. Per aggiungere una lingua: un nuovo modulo qui, il suo codice in
-LANGUAGES, e `scripts\check_i18n.py` per verificare che non manchi nulla.
+LANGUAGES, e `scripts/check_i18n.py` per verificare che non manchi nulla.
 """
 
 from __future__ import annotations
