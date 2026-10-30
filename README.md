@@ -63,6 +63,19 @@ recreate the virtualenv.
 or double-click `Avvia.bat` (it uses `pythonw.exe`, without a console). A
 project to open or a video to import can be passed as argument.
 
+### Linux
+
+Tested on Ubuntu 24.04 (X11) and Debian 13 (GNOME on Wayland, through XWayland). Install Tk, venv and ffmpeg with the package manager, create the virtualenv and start the program with `avvia.sh`:
+
+```bash
+sudo apt install python3-tk python3-venv ffmpeg
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+./avvia.sh [project.json | video.mp4]
+```
+
+`avvia.sh` uses `.venv/bin/python` when it exists, otherwise `python3`. ffmpeg is looked for in `tools/ffmpeg/ffmpeg` and then in the PATH; the **Download / Update** button works on Windows only. If the distribution's ffmpeg is older than 7 (Ubuntu 24.04 ships 6.1), a static release build can go in `tools/ffmpeg/ffmpeg`. The audio preview uses the first system player found among `pw-cat`, `paplay`, `aplay` and `ffplay`; without any of them the preview is silent.
+
 ## FFmpeg
 
 ffmpeg is not included: it is a separate program with its own license and it
@@ -355,9 +368,9 @@ logo and icon (it needs the Panchang font in `font\`).
 | `editsimple/timeline_view.py` | timeline: ruler, film strip, audio, effect lanes, dragging |
 | `editsimple/preview_view.py` | preview with drawing and editing of overlays with the mouse, view zoom |
 | `editsimple/panels.py` | properties panel of the selected item |
-| `editsimple/fonts.py` | fonts of `font/` and of Windows, picker with preview |
+| `editsimple/fonts.py` | fonts of `font/` and of the system, picker with preview |
 | `editsimple/tools.py` | finding, downloading and updating ffmpeg and VitTrack in `tools/` |
-| `editsimple/audio.py` | audio playback in the preview (Windows) |
+| `editsimple/audio.py` | audio playback in the preview (waveOut on Windows, a system player on Linux and macOS) |
 | `editsimple/i18n.py`, `editsimple/locales/` | interface languages (Italian in the code, catalogs for the other 8) |
 | `editsimple/theme.py`, `widgets.py`, `frameless.py` | dark theme, components and dialogs, window without title bar |
 | `editsimple/procs.py`, `config.py` | child processes tied to the app; settings in `config.json` |

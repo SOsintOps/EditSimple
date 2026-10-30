@@ -51,6 +51,19 @@ punta a un interprete che non esiste, il programma non parte (`No Python at
 oppure doppio clic su `Avvia.bat` (usa `pythonw.exe`, senza console). Come
 argomento si può passare un progetto da aprire o un video da importare.
 
+### Linux
+
+Provato su Ubuntu 24.04 (X11) e Debian 13 (GNOME su Wayland, tramite XWayland). Si installano Tk, venv e ffmpeg con il gestore di pacchetti, si crea il virtualenv e si avvia il programma con `avvia.sh`:
+
+```bash
+sudo apt install python3-tk python3-venv ffmpeg
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+./avvia.sh [progetto.json | video.mp4]
+```
+
+`avvia.sh` usa `.venv/bin/python` se c'è, altrimenti `python3`. ffmpeg si cerca in `tools/ffmpeg/ffmpeg` e poi nel PATH; il pulsante **Scarica / Aggiorna** funziona solo su Windows. Se l'ffmpeg della distribuzione è più vecchio della 7 (Ubuntu 24.04 ha la 6.1), si può mettere un build statico di release in `tools/ffmpeg/ffmpeg`. L'anteprima audio usa il primo lettore del sistema tra `pw-cat`, `paplay`, `aplay` e `ffplay`; se non ce n'è nessuno l'anteprima è muta.
+
 ## FFmpeg
 
 ffmpeg non è incluso: è un programma separato con la propria licenza e non
@@ -344,13 +357,13 @@ icona (serve il carattere Panchang in `font\`).
 | `editsimple/timeline_view.py` | timeline: righello, pellicola di fotogrammi, audio, corsie degli effetti, trascinamenti |
 | `editsimple/preview_view.py` | anteprima con disegno e modifica delle sovraimpressioni col mouse |
 | `editsimple/panels.py` | pannello delle proprietà dell'elemento selezionato |
-| `editsimple/fonts.py` | caratteri di `font/` e di Windows, finestra di scelta con anteprima |
+| `editsimple/fonts.py` | caratteri di `font/` e del sistema, finestra di scelta con anteprima |
 | `editsimple/tools.py` | ricerca, download e aggiornamento di ffmpeg in `tools/` |
 | `editsimple/theme.py`, `widgets.py`, `frameless.py` | tema scuro, componenti e dialoghi, finestra senza barra |
 | `editsimple/procs.py`, `config.py` | processi figli legati all'app; impostazioni in `config.json` |
 | `font/` | caratteri che viaggiano con il programma (DejaVu; Panchang per il logo) |
 | `editsimple/i18n.py`, `editsimple/locales/` | lingue dell'interfaccia (italiano nel codice, cataloghi per le altre 8) |
-| `editsimple/audio.py` | riproduzione dell'audio nell'anteprima (Windows) |
+| `editsimple/audio.py` | riproduzione dell'audio nell'anteprima (waveOut su Windows, un lettore del sistema su Linux e macOS) |
 | `scripts/build_exe.py`, `scripts/make_brand.py` | eseguibile unico; logo e icona |
 | `scripts/check_i18n.py` | controllo dei cataloghi delle lingue |
 | `scripts/manual_screenshots.py` | rifà il progetto d'esempio passo per passo e prende gli screenshot del manuale |
