@@ -81,6 +81,8 @@ _warm_thread: threading.Thread | None = None
 # sola per candidato e per sessione: 80 ms per lettore sono accettati, e non si ripetono mai per un
 # comando gia' verificato o gia' scartato
 START_CHECK = 0.08
+# il controllo di avvio si fa solo se il lettore riceve almeno mezzo secondo di campioni (16 bit)
+_CHECK_MIN_BYTES = RATE * CHANNELS * 2 // 2
 # ritardo di avvio stimato di ogni lettore (avvio del processo, collegamento al server audio, primo
 # buffer), in secondi: sono stime, non misure, e dipendono dalla macchina e dal server audio; un lettore
 # sconosciuto conta 0.0
@@ -238,13 +240,17 @@ class AudioPlayer:
 
         writer = threading.Thread(target=feed, daemon=True)
         writer.start()
-        if key not in _verified:
+        # con meno di mezzo secondo da suonare un lettore sano puo' finire ed uscire entro il controllo:
+        # in quel caso il controllo non dice nulla e si rimanda al Play successivo
+        if key not in _verified and len(data) >= _CHECK_MIN_BYTES:
             time.sleep(START_CHECK)
-            if proc.poll() is not None:
-                # il lettore e' uscito prima di dare suono: si prova subito il candidato dopo e questo
-                # resta scartato per il resto della sessione; all'utente non si mostra nulla (l'anteprima
-                # resta muta solo se falliscono tutti, come quando non c'e' nessun lettore). Ogni nuovo
-                # tentativo toglie un candidato e il contatore fa da limite esplicito.
+            code = proc.poll()
+            if code is not None and code != 0:
+                # il lettore e' uscito con un errore prima di dare suono: si prova subito il candidato dopo
+                # e questo resta scartato per il resto della sessione; all'utente non si mostra nulla
+                # (l'anteprima resta muta solo se falliscono tutti, come quando non c'e' nessun lettore).
+                # Ogni nuovo tentativo toglie un candidato e il contatore fa da limite esplicito. Chi esce
+                # con codice 0 ha finito normalmente: non si scarta e non si considera verificato.
                 try:
                     proc.stdin.close()
                 except (OSError, ValueError):
@@ -256,7 +262,8 @@ class AudioPlayer:
                     self._buffer = None
                     return False
                 return self._play_external(t, attempt + 1)
-            _verified.add(key)
+            if code is None:
+                _verified.add(key)
         # l'orologio parte quando si stima che il processo dia suono, contando dall'istante del Popen
         # (non dalla fine dell'attesa START_CHECK)
         self._proc, self._writer, self._t0, self._start = proc, writer, started + _LATENCY.get(command[0], 0.0), t
