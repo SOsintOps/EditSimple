@@ -21,6 +21,7 @@ release notes: first the introduction, then the list of changes.
 - **Linux and macOS: first Play**: the search for a system player (including the pw-cat check) runs in the background at start-up, so the first Play no longer waits for it.
 - **Tidy-up in preview_view.py**: all imports are grouped above the cursor constants (no behaviour change).
 - **Linux launcher through a symbolic link**: avvia.sh follows symbolic links to itself, so a link in ~/bin starts the program from the real folder.
+- **Open folder**: xdg-open and open receive an absolute path; the tools.py description names tools/ffmpeg/ffmpeg on Linux and macOS.
 
 ## 1.0.0
 

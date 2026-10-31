@@ -5,8 +5,9 @@
 
 ffmpeg e' un programma separato, con la propria licenza: non viene incluso
 nel programma ne' nell'eseguibile. Viene cercato, nell'ordine, in
-tools/ffmpeg/ffmpeg.exe accanto al programma e nel PATH di sistema. Il
-download prende il build Windows "release essentials" di gyan.dev, quello
+tools/ffmpeg/ffmpeg.exe accanto al programma
+(tools/ffmpeg/ffmpeg su Linux e macOS, vedi FFMPEG_EXE) e nel PATH di sistema.
+Il download prende il build Windows "release essentials" di gyan.dev, quello
 indicato dal sito ufficiale di FFmpeg (https://ffmpeg.org/download.html):
 dallo zip si tengono solo ffmpeg.exe, LICENSE e README. Nessuna installazione
 globale, nessuna modifica al PATH: tutto resta dentro tools/.
@@ -69,7 +70,8 @@ def open_folder(path: str | os.PathLike, select: bool = False) -> None:
     """Apre una cartella nel gestore di file del sistema.
 
     Con `select` il percorso e' un file: su Windows Esplora risorse lo evidenzia,
-    altrove si apre la cartella che lo contiene (xdg-open su Linux, open su macOS).
+    altrove si apre la cartella che lo contiene (percorso assoluto; xdg-open su Linux,
+    open su macOS).
     """
     target = os.path.normpath(str(path))
     if sys.platform == "win32":
@@ -81,7 +83,10 @@ def open_folder(path: str | os.PathLike, select: bool = False) -> None:
     if select and os.path.isfile(target):
         target = os.path.dirname(target)
     opener = "open" if sys.platform == "darwin" else "xdg-open"
-    subprocess.Popen([opener, target], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    # percorso assoluto, cosi' un nome che comincia con "-" non viene letto come opzione;
+    # l'esito di xdg-open / open non si aspetta: se non c'e' un gestore di file registrato
+    # fallisce in silenzio (limite noto)
+    subprocess.Popen([opener, os.path.abspath(target)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
 def find() -> tuple[Path | None, str]:
