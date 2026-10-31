@@ -9,7 +9,7 @@ memoria come campioni a 16 bit. Si riproduce da qualunque istante passando a
 waveOut la parte di memoria che serve, senza scrivere file; la posizione di
 riproduzione fa da orologio all'anteprima, cosi' video e audio restano allineati.
 Su Linux e macOS i campioni vengono passati in un flusso a un lettore del sistema
-(pw-cat, paplay, aplay o ffplay, il primo che c'e'), e l'orologio e' quello del
+(pw-cat, paplay, aplay o ffplay, il primo che c'e' e che non esce subito), e l'orologio e' quello del
 processo; se non c'e' nessun lettore l'anteprima resta muta.
 """
 
@@ -67,7 +67,17 @@ _PLAYERS: tuple[list[str], ...] = (
     ["aplay", "-q", "-t", "raw", "-f", "S16_LE", "-r", "48000", "-c", "2", "-"],
     ["ffplay", "-nodisp", "-autoexit", "-loglevel", "quiet", "-f", "s16le", "-ar", "48000", "-ac", "2", "-i", "-"],
 )
-_player: list[str] | None = None
+# comandi usciti subito dopo l'avvio: scartati per il resto della sessione (casi visti nella revisione:
+# pw-cat senza PipeWire, aplay senza scheda, paplay senza server)
+_rejected: set[tuple[str, ...]] = set()
+# comandi che hanno superato il controllo di avvio: per loro non si aspetta piu'
+_verified: set[tuple[str, ...]] = set()
+# esito di _usable per nome di lettore: la sonda pw-cat --help gira una volta sola
+_usable_cache: dict[str, bool] = {}
+# dopo il Popen il thread dell'interfaccia aspetta questo tempo prima di fidarsi del lettore, una volta
+# sola per candidato e per sessione: 80 ms per lettore sono accettati, e non si ripetono mai per un
+# comando gia' verificato o gia' scartato
+START_CHECK = 0.08
 
 
 def _usable(cmd: list[str]) -> bool:
@@ -86,12 +96,16 @@ def _usable(cmd: list[str]) -> bool:
     return "--raw" in (out.stdout or "") + (out.stderr or "")
 
 
+def _is_usable(cmd: list[str]) -> bool:
+    """_usable con il risultato tenuto in memoria per nome di lettore."""
+    if cmd[0] not in _usable_cache:
+        _usable_cache[cmd[0]] = _usable(cmd)
+    return _usable_cache[cmd[0]]
+
+
 def _player_command() -> list[str] | None:
-    """Il primo lettore utilizzabile (cercato una volta sola)."""
-    global _player
-    if _player is None:
-        _player = next((cmd for cmd in _PLAYERS if _usable(cmd)), [])
-    return _player or None
+    """Il primo lettore utilizzabile e non ancora scartato (None se non ce n'e')."""
+    return next((cmd for cmd in _PLAYERS if tuple(cmd) not in _rejected and _is_usable(cmd)), None)
 
 
 def available() -> bool:
@@ -156,18 +170,24 @@ class AudioPlayer:
         self._hwo, self._hdr, self._start = hwo, hdr, t
         return True
 
-    def _play_external(self, t: float) -> bool:
-        """Passa i campioni al lettore del sistema da un thread; il tempo e' contato da qui."""
+    def _play_external(self, t: float, attempt: int = 0) -> bool:
+        """Passa i campioni al lettore del sistema da un thread; il tempo e' contato dall'avvio del processo."""
         command = _player_command()
         if command is None:
             self._buffer = None
             return False
+        key = tuple(command)
         try:
             proc = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.DEVNULL,
                                     stderr=subprocess.DEVNULL)
         except OSError:
-            self._buffer = None
-            return False
+            # il programma e' sparito fra la ricerca e l'avvio: lo si tratta come un lettore uscito subito
+            _rejected.add(key)
+            if attempt + 1 >= len(_PLAYERS):
+                self._buffer = None
+                return False
+            return self._play_external(t, attempt + 1)
+        started = time.perf_counter()
         data = self._buffer.tobytes()
 
         def feed() -> None:
@@ -177,9 +197,28 @@ class AudioPlayer:
             except (OSError, ValueError):
                 pass                                  # fermato prima della fine: il tubo e' chiuso
 
-        self._writer = threading.Thread(target=feed, daemon=True)
-        self._writer.start()
-        self._proc, self._t0, self._start = proc, time.perf_counter(), t
+        writer = threading.Thread(target=feed, daemon=True)
+        writer.start()
+        if key not in _verified:
+            time.sleep(START_CHECK)
+            if proc.poll() is not None:
+                # il lettore e' uscito prima di dare suono: si prova subito il candidato dopo e questo
+                # resta scartato per il resto della sessione; all'utente non si mostra nulla (l'anteprima
+                # resta muta solo se falliscono tutti, come quando non c'e' nessun lettore). Ogni nuovo
+                # tentativo toglie un candidato e il contatore fa da limite esplicito.
+                try:
+                    proc.stdin.close()
+                except (OSError, ValueError):
+                    pass
+                proc.wait()
+                writer.join(timeout=1)
+                _rejected.add(key)
+                if attempt + 1 >= len(_PLAYERS):
+                    self._buffer = None
+                    return False
+                return self._play_external(t, attempt + 1)
+            _verified.add(key)
+        self._proc, self._writer, self._t0, self._start = proc, writer, started, t
         return True
 
     def position(self) -> float | None:

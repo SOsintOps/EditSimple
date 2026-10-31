@@ -16,6 +16,7 @@ release notes: first the introduction, then the list of changes.
 - **Start-up errors on Linux**: when the interface cannot start, the message is also shown with zenity or xmessage if one of them is installed.
 - **Linux launcher**: avvia.sh starts the program with .venv/bin/python, or python3 when there is no virtualenv; new "Linux" section in the README.
 - **SyntaxWarning at start**: fixed the invalid escape sequence in the docstring of editsimple/locales/__init__.py.
+- **Linux and macOS: broken audio player**: when the system player exits right after starting (for example pw-cat without a running PipeWire, or aplay without a device), the preview switches to the next player and does not try the broken one again in the session; before, the preview ran silent.
 
 ## 1.0.0
 
