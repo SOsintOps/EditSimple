@@ -283,21 +283,39 @@ def apply() -> None:
 # immagine dell'icona per iconphoto, decodificata una volta sola e condivisa da tutte le finestre;
 # serve una radice Tk, quindi si crea alla prima chiamata
 _icon_photo = None
+# interprete Tk su cui e' stata creata _icon_photo: un'immagine vale solo nel suo interprete, quindi
+# con una nuova radice (dopo la distruzione della prima) si ricrea
+_icon_tk = None
+
+
+def _build_icon(window) -> None:
+    """Decodifica l'icona e la crea come immagine dell'interprete Tk di `window`."""
+    global _icon_photo, _icon_tk
+    from PIL import Image, ImageTk
+
+    _icon_photo = ImageTk.PhotoImage(Image.open(ICON_FILE).convert("RGBA"), master=window)
+    _icon_tk = window.tk
 
 
 def set_icon(window) -> None:
     """Icona dell'applicazione sulla finestra (e, per la principale, nella barra di Windows)."""
-    global _icon_photo
     if not ICON_FILE.is_file():
         return
     if sys.platform != "win32":
         # X11 e macOS non leggono i file .ico con iconbitmap: si passa l'immagine con iconphoto
         try:
-            if _icon_photo is None:
-                from PIL import Image, ImageTk
-
-                _icon_photo = ImageTk.PhotoImage(Image.open(ICON_FILE).convert("RGBA"))
-            window.iconphoto(isinstance(window, ctk.CTk), _icon_photo)
+            if _icon_photo is None or _icon_tk is not window.tk:
+                _build_icon(window)
+            try:
+                window.iconphoto(isinstance(window, ctk.CTk), _icon_photo)
+            except tk.TclError as exc:
+                # 'image "pyimageN" doesn't exist': l'immagine in memoria non c'e' piu' nell'interprete
+                # (per esempio creata su una radice distrutta); si ricrea una volta e si riprova. Gli altri
+                # errori (finestra gia' distrutta) lasciano l'immagine com'e'
+                if "image" not in str(exc):
+                    raise
+                _build_icon(window)
+                window.iconphoto(isinstance(window, ctk.CTk), _icon_photo)
             window._editsimple_icon = _icon_photo      # Tk tiene solo un riferimento debole
         except (OSError, tk.TclError):
             pass
