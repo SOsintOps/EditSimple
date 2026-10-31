@@ -6,7 +6,8 @@
 f=$0
 hops=0
 while [ -h "$f" ]; do
-    link=$(readlink -- "$f") || break
+    # senza readlink (o se fallisce) il link non si risolve e si parte dalla sua cartella, senza messaggi
+    link=$(readlink -- "$f" 2>/dev/null) || break
     case $link in
         /*) f=$link ;;
         *) f=$(dirname -- "$f")/$link ;;

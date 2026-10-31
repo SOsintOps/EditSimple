@@ -20,7 +20,7 @@ release notes: first the introduction, then the list of changes.
 - **Linux and macOS: audio/video alignment**: the preview clock allows for the start delay of the system player (a fixed estimate per player) and ffplay starts without buffering; a small offset can remain, see the Linux section of the README.
 - **Linux and macOS: first Play**: the search for a system player (including the pw-cat check) runs in the background at start-up and the interface never waits for it; a Play pressed while the search is still running starts silent and the sound joins in as soon as the search ends (at most about 3 seconds after start-up).
 - **Tidy-up in preview_view.py**: all imports are grouped above the cursor constants (no behaviour change).
-- **Linux launcher through a symbolic link**: avvia.sh follows symbolic links to itself, so a link in ~/bin starts the program from the real folder.
+- **Linux launcher through a symbolic link**: avvia.sh follows symbolic links to itself, so a link in ~/bin starts the program from the real folder; on a system without readlink the link is not followed and nothing is printed.
 - **Open folder**: xdg-open and open receive an absolute path; the tools.py description names tools/ffmpeg/ffmpeg on Linux and macOS.
 - **Start-up errors on Linux, once**: after the first dialog tool that could start (zenity or xmessage) the other one is not tried, whatever the exit code, so closing the dialog with the window button no longer shows the message twice.
 - **Window icon outside Windows**: the icon is decoded once and the same image is reused for every window and dialog; it is created again only for a new Tk root (or if the image no longer exists), instead of leaving the windows of a second root without an icon.
