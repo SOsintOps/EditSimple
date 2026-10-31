@@ -22,9 +22,10 @@ from PIL import Image, ImageTk
 from . import overlays, theme, widgets
 from .i18n import N_, tr
 
-# cursori di ridimensionamento diagonale: i nomi "size_*" esistono solo su Windows e macOS,
-# su X11 Tk rifiuta il cursore ("bad cursor spec") e il gestore del movimento fallisce
-if sys.platform == "win32" or sys.platform == "darwin":
+# cursori di ridimensionamento diagonale: i nomi "size_nw_se" / "size_ne_sw" esistono solo su Windows;
+# fuori da Windows (X11, e anche macOS) si usano i nomi dei cursori X11, che Tk accetta ovunque:
+# su X11 i nomi di Windows vengono rifiutati ("bad cursor spec") e il gestore del movimento fallisce
+if sys.platform == "win32":
     NW_SE, NE_SW = "size_nw_se", "size_ne_sw"
 else:
     NW_SE, NE_SW = "top_left_corner", "top_right_corner"

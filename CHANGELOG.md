@@ -11,7 +11,7 @@ release notes: first the introduction, then the list of changes.
 - **Linux and macOS: preview sound**: the audio preview plays through the first system player found among pw-cat, paplay, aplay and ffplay; without one it stays silent as before.
 - **Linux: pw-cat without --raw**: the preview sound skips a pw-cat that does not know the --raw option (Ubuntu 24.04) and uses the next player, instead of staying silent.
 - **Linux and macOS: window icon**: the program icon is set with iconphoto, since iconbitmap does not read .ico files there.
-- **Linux: resize cursors**: the handles of the selected item use X11 cursor names; before, every hover raised a Tk error.
+- **Linux and macOS: resize cursors**: outside Windows the handles of the selected item use the portable X11 cursor names (the size_* names exist on Windows only); before, every hover raised a Tk error on X11.
 - **ffmpeg outside Windows**: the Configure page and the start-up warning explain how to install ffmpeg with the system package manager or put it in tools/ffmpeg/, and the Download / Update button is disabled.
 - **Start-up errors on Linux**: when the interface cannot start, the message is also shown with zenity or xmessage if one of them is installed.
 - **Linux launcher**: avvia.sh starts the program with .venv/bin/python, or python3 when there is no virtualenv; new "Linux" section in the README.
