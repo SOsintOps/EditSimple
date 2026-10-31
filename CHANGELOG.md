@@ -22,6 +22,7 @@ release notes: first the introduction, then the list of changes.
 - **Tidy-up in preview_view.py**: all imports are grouped above the cursor constants (no behaviour change).
 - **Linux launcher through a symbolic link**: avvia.sh follows symbolic links to itself, so a link in ~/bin starts the program from the real folder.
 - **Open folder**: xdg-open and open receive an absolute path; the tools.py description names tools/ffmpeg/ffmpeg on Linux and macOS.
+- **Start-up errors on Linux, once**: after the first dialog tool that could start (zenity or xmessage) the other one is not tried, whatever the exit code, so closing the dialog with the window button no longer shows the message twice.
 
 ## 1.0.0
 

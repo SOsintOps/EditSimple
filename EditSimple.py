@@ -35,11 +35,12 @@ def _fail(message: str) -> int:
             if shutil.which(command[0]) is None:
                 continue
             try:
-                done = subprocess.run(command, check=False)
+                subprocess.run(command, check=False)
             except OSError:
                 continue
-            if done.returncode == 0:
-                break
+            # basta il primo strumento che si e' avviato: chiuso con la X o con Esc non deve
+            # ripetere il messaggio con lo strumento successivo
+            break
     return 1
 
 
