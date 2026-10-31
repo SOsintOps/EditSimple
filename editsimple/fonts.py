@@ -54,22 +54,34 @@ PREFERRED = ["segoeuib.ttf", "arialbd.ttf", "DejaVuSans-Bold.ttf"]
 
 _paths: dict[str, str] = {}
 _loaded: dict[tuple[str, int], ImageFont.FreeTypeFont] = {}
+# le cartelle si percorrono una volta per processo, anche quando non si trova nessun carattere
+# (prima un risultato vuoto faceva ripartire la ricerca a ogni richiesta)
+_scanned = False
 
 
 def _scan() -> dict[str, str]:
-    if _paths:
+    global _scanned
+    if _scanned:
         return _paths
     seen: set[str] = set()
+    # percorsi reali delle cartelle gia' visitate: seguendo i link, uno puo' puntare a una cartella superiore
+    visited: set[str] = set()
     for folder in [FONT_DIR] + SYSTEM_DIRS:
         if not folder.is_dir():
             continue
-        for root, subdirs, files in os.walk(folder):
+        for root, subdirs, files in os.walk(folder, followlinks=True):
+            real = os.path.realpath(root)
+            if real in visited:
+                subdirs[:] = []
+                continue
+            visited.add(real)
             subdirs.sort(key=str.lower)
             for name in sorted(files, key=str.lower):
                 low = name.lower()
                 if low.endswith(EXTENSIONS) and low not in seen:
                     seen.add(low)
                     _paths[name] = os.path.join(root, name)
+    _scanned = True
     return _paths
 
 

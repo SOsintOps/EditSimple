@@ -24,6 +24,7 @@ release notes: first the introduction, then the list of changes.
 - **Open folder**: xdg-open and open receive an absolute path; the tools.py description names tools/ffmpeg/ffmpeg on Linux and macOS.
 - **Start-up errors on Linux, once**: after the first dialog tool that could start (zenity or xmessage) the other one is not tried, whatever the exit code, so closing the dialog with the window button no longer shows the message twice.
 - **Window icon outside Windows**: the icon is decoded once and the same image is reused for every window and dialog.
+- **System fonts**: the font folders are scanned once (also when no font is found) and symbolic links inside the font folders are followed, with a guard against loops.
 
 ## 1.0.0
 
