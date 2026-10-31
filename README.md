@@ -74,7 +74,7 @@ python3 -m venv .venv
 ./avvia.sh [project.json | video.mp4]
 ```
 
-`avvia.sh` uses `.venv/bin/python` when it exists, otherwise `python3`. ffmpeg is looked for in `tools/ffmpeg/ffmpeg` and then in the PATH; the **Download / Update** button works on Windows only. If the distribution's ffmpeg is older than 7 (Ubuntu 24.04 ships 6.1), a static release build can go in `tools/ffmpeg/ffmpeg`. The audio preview uses the first system player found among `pw-cat`, `paplay`, `aplay` and `ffplay`; without any of them the preview is silent.
+`avvia.sh` uses `.venv/bin/python` when it exists, otherwise `python3`. ffmpeg is looked for in `tools/ffmpeg/ffmpeg` and then in the PATH; the **Download / Update** button works on Windows only. If the distribution's ffmpeg is older than 7 (Ubuntu 24.04 ships 6.1), a static release build can go in `tools/ffmpeg/ffmpeg`. The audio preview uses the first system player found among `pw-cat`, `paplay`, `aplay` and `ffplay`; without any of them the preview is silent. On Linux and macOS the alignment between sound and picture in the preview depends on the start delay of the system player: a fixed estimate per player is applied (about 0.15 s for `pw-cat` and `paplay`), so a small offset can remain.
 
 ## FFmpeg
 

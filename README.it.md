@@ -62,7 +62,7 @@ python3 -m venv .venv
 ./avvia.sh [progetto.json | video.mp4]
 ```
 
-`avvia.sh` usa `.venv/bin/python` se c'è, altrimenti `python3`. ffmpeg si cerca in `tools/ffmpeg/ffmpeg` e poi nel PATH; il pulsante **Scarica / Aggiorna** funziona solo su Windows. Se l'ffmpeg della distribuzione è più vecchio della 7 (Ubuntu 24.04 ha la 6.1), si può mettere un build statico di release in `tools/ffmpeg/ffmpeg`. L'anteprima audio usa il primo lettore del sistema tra `pw-cat`, `paplay`, `aplay` e `ffplay`; se non ce n'è nessuno l'anteprima è muta.
+`avvia.sh` usa `.venv/bin/python` se c'è, altrimenti `python3`. ffmpeg si cerca in `tools/ffmpeg/ffmpeg` e poi nel PATH; il pulsante **Scarica / Aggiorna** funziona solo su Windows. Se l'ffmpeg della distribuzione è più vecchio della 7 (Ubuntu 24.04 ha la 6.1), si può mettere un build statico di release in `tools/ffmpeg/ffmpeg`. L'anteprima audio usa il primo lettore del sistema tra `pw-cat`, `paplay`, `aplay` e `ffplay`; se non ce n'è nessuno l'anteprima è muta. Su Linux e macOS l'allineamento fra suono e immagine nell'anteprima dipende dal ritardo di avvio del lettore del sistema: si applica una stima fissa per lettore (circa 0,15 s per `pw-cat` e `paplay`), quindi può restare un piccolo scarto.
 
 ## FFmpeg
 

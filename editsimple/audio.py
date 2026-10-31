@@ -10,7 +10,7 @@ waveOut la parte di memoria che serve, senza scrivere file; la posizione di
 riproduzione fa da orologio all'anteprima, cosi' video e audio restano allineati.
 Su Linux e macOS i campioni vengono passati in un flusso a un lettore del sistema
 (pw-cat, paplay, aplay o ffplay, il primo che c'e' e che non esce subito), e l'orologio e' quello del
-processo; se non c'e' nessun lettore l'anteprima resta muta.
+processo, con una stima del suo ritardo di avvio; se non c'e' nessun lettore l'anteprima resta muta.
 """
 
 from __future__ import annotations
@@ -65,7 +65,7 @@ _PLAYERS: tuple[list[str], ...] = (
     ["pw-cat", "--playback", "--raw", "--format=s16", "--rate=48000", "--channels=2", "-"],
     ["paplay", "--raw", "--format=s16le", "--rate=48000", "--channels=2"],
     ["aplay", "-q", "-t", "raw", "-f", "S16_LE", "-r", "48000", "-c", "2", "-"],
-    ["ffplay", "-nodisp", "-autoexit", "-loglevel", "quiet", "-f", "s16le", "-ar", "48000", "-ac", "2", "-i", "-"],
+    ["ffplay", "-nodisp", "-autoexit", "-loglevel", "quiet", "-fflags", "nobuffer", "-probesize", "32", "-analyzeduration", "0", "-f", "s16le", "-ar", "48000", "-ac", "2", "-i", "-"],
 )
 # comandi usciti subito dopo l'avvio: scartati per il resto della sessione (casi visti nella revisione:
 # pw-cat senza PipeWire, aplay senza scheda, paplay senza server)
@@ -78,6 +78,10 @@ _usable_cache: dict[str, bool] = {}
 # sola per candidato e per sessione: 80 ms per lettore sono accettati, e non si ripetono mai per un
 # comando gia' verificato o gia' scartato
 START_CHECK = 0.08
+# ritardo di avvio stimato di ogni lettore (avvio del processo, collegamento al server audio, primo
+# buffer), in secondi: sono stime, non misure, e dipendono dalla macchina e dal server audio; un lettore
+# sconosciuto conta 0.0
+_LATENCY: dict[str, float] = {"pw-cat": 0.15, "paplay": 0.15, "aplay": 0.05, "ffplay": 0.10}
 
 
 def _usable(cmd: list[str]) -> bool:
@@ -218,13 +222,17 @@ class AudioPlayer:
                     return False
                 return self._play_external(t, attempt + 1)
             _verified.add(key)
-        self._proc, self._writer, self._t0, self._start = proc, writer, started, t
+        # l'orologio parte quando si stima che il processo dia suono, contando dall'istante del Popen
+        # (non dalla fine dell'attesa START_CHECK)
+        self._proc, self._writer, self._t0, self._start = proc, writer, started + _LATENCY.get(command[0], 0.0), t
         return True
 
     def position(self) -> float | None:
         """Istante della timeline che si sta sentendo (None se non suona)."""
         if self._proc is not None:
-            return self._start + (time.perf_counter() - self._t0)
+            # prima del ritardo di avvio stimato la posizione resta su _start (mai prima del punto da cui
+            # si e' chiesto di partire)
+            return self._start + max(0.0, time.perf_counter() - self._t0)
         if self._hwo is None:
             return None
         mm = _MMTIME()
