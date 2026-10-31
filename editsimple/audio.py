@@ -74,6 +74,9 @@ _rejected: set[tuple[str, ...]] = set()
 _verified: set[tuple[str, ...]] = set()
 # esito di _usable per nome di lettore: la sonda pw-cat --help gira una volta sola
 _usable_cache: dict[str, bool] = {}
+# protegge _usable_cache: la sonda puo' girare nel thread di riscaldamento e nel thread dell'interfaccia
+_lock = threading.Lock()
+_warm_thread: threading.Thread | None = None
 # dopo il Popen il thread dell'interfaccia aspetta questo tempo prima di fidarsi del lettore, una volta
 # sola per candidato e per sessione: 80 ms per lettore sono accettati, e non si ripetono mai per un
 # comando gia' verificato o gia' scartato
@@ -102,9 +105,13 @@ def _usable(cmd: list[str]) -> bool:
 
 def _is_usable(cmd: list[str]) -> bool:
     """_usable con il risultato tenuto in memoria per nome di lettore."""
-    if cmd[0] not in _usable_cache:
-        _usable_cache[cmd[0]] = _usable(cmd)
-    return _usable_cache[cmd[0]]
+    # il lucchetto copre ricerca e sonda insieme: chi arriva mentre la sonda e' in corso la aspetta invece
+    # di lanciare un secondo pw-cat --help; l'attesa dura al massimo quanto la sonda e capita solo se si
+    # preme Play mentre il riscaldamento non ha ancora finito
+    with _lock:
+        if cmd[0] not in _usable_cache:
+            _usable_cache[cmd[0]] = _usable(cmd)
+        return _usable_cache[cmd[0]]
 
 
 def _player_command() -> list[str] | None:
@@ -116,6 +123,14 @@ def available() -> bool:
     if sys.platform == "win32":
         return True
     return _player_command() is not None
+
+
+def warm_up() -> None:
+    """Cerca il lettore in un thread, cosi' il primo Play non aspetta la sonda (pw-cat --help puo' durare secondi)."""
+    global _warm_thread
+    if _warm_thread is None:
+        _warm_thread = threading.Thread(target=_player_command, name="audio-warm-up", daemon=True)
+        _warm_thread.start()
 
 
 def load_wav(path: str) -> np.ndarray:

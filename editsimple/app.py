@@ -103,6 +103,8 @@ class App(ctk.CTk):
         self._build()
         self.protocol("WM_DELETE_WINDOW", self._on_close)
         self._bind_keys()
+        if sys.platform != "win32":
+            audio.warm_up()                 # la ricerca del lettore audio (pw-cat --help) non deve aspettare il primo Play
         self.after(50, self._pump_posted)
         self.after(200, lambda: self._startup(initial))
 
