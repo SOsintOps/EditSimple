@@ -19,6 +19,7 @@ release notes: first the introduction, then the list of changes.
 - **Linux and macOS: broken audio player**: when the system player exits right after starting (for example pw-cat without a running PipeWire, or aplay without a device), the preview switches to the next player and does not try the broken one again in the session; before, the preview ran silent.
 - **Linux and macOS: audio/video alignment**: the preview clock allows for the start delay of the system player (a fixed estimate per player) and ffplay starts without buffering; a small offset can remain, see the Linux section of the README.
 - **Linux and macOS: first Play**: the search for a system player (including the pw-cat check) runs in the background at start-up, so the first Play no longer waits for it.
+- **Tidy-up in preview_view.py**: all imports are grouped above the cursor constants (no behaviour change).
 
 ## 1.0.0
 

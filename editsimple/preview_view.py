@@ -20,6 +20,7 @@ import customtkinter as ctk
 from PIL import Image, ImageTk
 
 from . import overlays, theme, widgets
+from .i18n import N_, tr
 
 # cursori di ridimensionamento diagonale: i nomi "size_*" esistono solo su Windows e macOS,
 # su X11 Tk rifiuta il cursore ("bad cursor spec") e il gestore del movimento fallisce
@@ -27,7 +28,6 @@ if sys.platform == "win32" or sys.platform == "darwin":
     NW_SE, NE_SW = "size_nw_se", "size_ne_sw"
 else:
     NW_SE, NE_SW = "top_left_corner", "top_right_corner"
-from .i18n import N_, tr
 
 HANDLE = 6
 HIT = 10
