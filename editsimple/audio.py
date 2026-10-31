@@ -221,13 +221,18 @@ class AudioPlayer:
         try:
             proc = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.DEVNULL,
                                     stderr=subprocess.DEVNULL)
-        except OSError:
-            # il programma e' sparito fra la ricerca e l'avvio: lo si tratta come un lettore uscito subito
+        except (FileNotFoundError, PermissionError):
+            # il programma e' sparito o non si puo' eseguire: lo si tratta come un lettore uscito subito
             _rejected.add(key)
             if attempt + 1 >= len(_PLAYERS):
                 self._buffer = None
                 return False
             return self._play_external(t, attempt + 1)
+        except OSError:
+            # errore passeggero (fork fallito, troppi file aperti durante un'esportazione): niente audio per
+            # questo Play, ma il lettore non si scarta e il Play successivo lo riprova
+            self._buffer = None
+            return False
         started = time.perf_counter()
         data = self._buffer.tobytes()
 
