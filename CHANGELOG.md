@@ -20,6 +20,7 @@ release notes: first the introduction, then the list of changes.
 - **Linux and macOS: audio/video alignment**: the preview clock allows for the start delay of the system player (a fixed estimate per player) and ffplay starts without buffering; a small offset can remain, see the Linux section of the README.
 - **Linux and macOS: first Play**: the search for a system player (including the pw-cat check) runs in the background at start-up, so the first Play no longer waits for it.
 - **Tidy-up in preview_view.py**: all imports are grouped above the cursor constants (no behaviour change).
+- **Linux launcher through a symbolic link**: avvia.sh follows symbolic links to itself, so a link in ~/bin starts the program from the real folder.
 
 ## 1.0.0
 
