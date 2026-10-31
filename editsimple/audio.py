@@ -103,30 +103,48 @@ def _usable(cmd: list[str]) -> bool:
     return "--raw" in (out.stdout or "") + (out.stderr or "")
 
 
-def _is_usable(cmd: list[str]) -> bool:
-    """_usable con il risultato tenuto in memoria per nome di lettore."""
-    # il lucchetto copre ricerca e sonda insieme: chi arriva mentre la sonda e' in corso la aspetta invece
-    # di lanciare un secondo pw-cat --help; l'attesa dura al massimo quanto la sonda e capita solo se si
-    # preme Play mentre il riscaldamento non ha ancora finito
-    with _lock:
+def _is_usable(cmd: list[str], wait: bool = True) -> bool | None:
+    """_usable con il risultato tenuto in memoria per nome di lettore.
+
+    Con wait=False non si aspetta la sonda in corso in un altro thread: si restituisce None (non ancora pronto).
+    """
+    # il lucchetto copre ricerca e sonda insieme, cosi' pw-cat --help non gira due volte; il thread
+    # dell'interfaccia lo chiede con wait=False e, se il riscaldamento lo tiene, non lo aspetta
+    if not _lock.acquire(blocking=wait):
+        return None
+    try:
         if cmd[0] not in _usable_cache:
             _usable_cache[cmd[0]] = _usable(cmd)
         return _usable_cache[cmd[0]]
+    finally:
+        _lock.release()
 
 
-def _player_command() -> list[str] | None:
-    """Il primo lettore utilizzabile e non ancora scartato (None se non ce n'e')."""
-    return next((cmd for cmd in _PLAYERS if tuple(cmd) not in _rejected and _is_usable(cmd)), None)
+def _player_command(wait: bool = True) -> list[str] | None:
+    """Il primo lettore utilizzabile e non ancora scartato (None se non ce n'e', o se con wait=False la sonda e' in corso)."""
+    for cmd in _PLAYERS:
+        if tuple(cmd) in _rejected:
+            continue
+        usable = _is_usable(cmd, wait)
+        if usable is None:
+            return None              # sonda ancora in corso: il prossimo giro dell'anteprima riprova
+        if usable:
+            return cmd
+    return None
 
 
 def available() -> bool:
     if sys.platform == "win32":
         return True
+    if _warm_thread is not None and _warm_thread.is_alive():
+        # la ricerca e' ancora in corso: si risponde di si' senza aspettarla, cosi' il mix si prepara
+        # intanto; finche' la sonda non finisce play() restituisce False e l'anteprima riprova a ogni giro
+        return True
     return _player_command() is not None
 
 
 def warm_up() -> None:
-    """Cerca il lettore in un thread, cosi' il primo Play non aspetta la sonda (pw-cat --help puo' durare secondi)."""
+    """Cerca il lettore in un thread, cosi' il thread dell'interfaccia non aspetta la sonda (pw-cat --help puo' durare secondi)."""
     global _warm_thread
     if _warm_thread is None:
         _warm_thread = threading.Thread(target=_player_command, name="audio-warm-up", daemon=True)
@@ -191,7 +209,9 @@ class AudioPlayer:
 
     def _play_external(self, t: float, attempt: int = 0) -> bool:
         """Passa i campioni al lettore del sistema da un thread; il tempo e' contato dall'avvio del processo."""
-        command = _player_command()
+        # il thread dell'interfaccia non aspetta mai la sonda del riscaldamento: se e' ancora in corso
+        # si resta muti per questo giro e _tick richiama play() al giro dopo
+        command = _player_command(wait=False)
         if command is None:
             self._buffer = None
             return False
