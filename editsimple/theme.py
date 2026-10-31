@@ -280,18 +280,25 @@ def apply() -> None:
     _deep_update(ctk.ThemeManager.theme, _THEME)
 
 
+# immagine dell'icona per iconphoto, decodificata una volta sola e condivisa da tutte le finestre;
+# serve una radice Tk, quindi si crea alla prima chiamata
+_icon_photo = None
+
+
 def set_icon(window) -> None:
     """Icona dell'applicazione sulla finestra (e, per la principale, nella barra di Windows)."""
+    global _icon_photo
     if not ICON_FILE.is_file():
         return
     if sys.platform != "win32":
         # X11 e macOS non leggono i file .ico con iconbitmap: si passa l'immagine con iconphoto
         try:
-            from PIL import Image, ImageTk
+            if _icon_photo is None:
+                from PIL import Image, ImageTk
 
-            photo = ImageTk.PhotoImage(Image.open(ICON_FILE).convert("RGBA"))
-            window.iconphoto(isinstance(window, ctk.CTk), photo)
-            window._editsimple_icon = photo      # Tk tiene solo un riferimento debole
+                _icon_photo = ImageTk.PhotoImage(Image.open(ICON_FILE).convert("RGBA"))
+            window.iconphoto(isinstance(window, ctk.CTk), _icon_photo)
+            window._editsimple_icon = _icon_photo      # Tk tiene solo un riferimento debole
         except (OSError, tk.TclError):
             pass
         return
